@@ -533,3 +533,267 @@ input.is-invalid, textarea.is-invalid, select.is-invalid { border-color: var(--r
   .scroll-cue i { animation: none; }
   .btn { transition: none; }
 }
+
+/* ── Montana road story (everything below the untouched 3D hero) ────────── */
+:is(.strip, .book, .fix, .diag, .how, .why, .faq, .closer, .foot) {
+  --ink: #fffdf9;
+  --ink-2: rgba(255, 255, 255, 0.84);
+  --ink-3: rgba(247, 246, 242, 0.92);
+  --line: rgba(168, 132, 47, 0.28);
+  --line-2: rgba(23, 33, 43, 0.14);
+  --paper: #17212b;
+  --paper-2: rgba(23, 33, 43, 0.76);
+  --paper-3: rgba(23, 33, 43, 0.58);
+  color: var(--paper);
+}
+
+.strip {
+  background: linear-gradient(90deg, #ffffff, #faf7ef 50%, #ffffff);
+  border-color: rgba(168, 132, 47, 0.24);
+  box-shadow: 0 16px 50px rgba(45, 55, 65, 0.08);
+  position: relative;
+  z-index: 2;
+}
+
+.strip li { border-color: rgba(23, 33, 43, 0.1); }
+.strip b { color: #8a671e; }
+
+.road-scene {
+  position: relative;
+  width: 100%;
+  height: clamp(320px, 52vw, 720px);
+  margin: 0;
+  background-color: #fffdf9;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-shadow: inset 0 1px rgba(255,255,255,.9), inset 0 -1px rgba(255,255,255,.9);
+}
+
+.road-scene::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,253,249,.72), transparent 13%, transparent 82%, rgba(255,253,249,.82));
+}
+
+.road-scene-sedan {
+  background-image: url('scenic/montana-road-sedan.webp');
+  background-position: 62% center;
+}
+
+.road-scene-corvette {
+  background-image: url('scenic/montana-road-corvette.webp');
+  background-position: center;
+}
+
+.road-scene-bmw {
+  background-image: url('scenic/montana-road-bmw.webp');
+  background-position: center;
+}
+
+.road-scene-truck {
+  background-image: url('scenic/montana-road-truck.webp');
+  background-position: center;
+}
+
+.book,
+.fix,
+.diag,
+.how,
+.why,
+.faq,
+.closer,
+.foot {
+  background-color: #fffdf9;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.book {
+  background-image:
+    linear-gradient(90deg, rgba(255,255,255,.97) 0%, rgba(255,255,255,.91) 43%, rgba(255,255,255,.72) 68%, rgba(255,255,255,.42) 100%),
+    linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,253,249,.92)),
+    url('scenic/montana-road-sedan.webp');
+  background-position: center, center, 62% center;
+}
+
+.fix {
+  background-image:
+    linear-gradient(90deg, rgba(255,253,249,.45), rgba(255,255,255,.86) 49%, rgba(255,255,255,.95)),
+    linear-gradient(180deg, rgba(255,255,255,.56), rgba(255,253,249,.94)),
+    url('scenic/montana-road-corvette.webp');
+  background-position: center, center, center;
+}
+
+.diag {
+  background-image:
+    linear-gradient(90deg, rgba(255,255,255,.94), rgba(255,255,255,.78) 62%, rgba(255,253,249,.48)),
+    linear-gradient(180deg, rgba(255,253,249,.76), rgba(255,255,255,.94)),
+    url('scenic/montana-road-corvette.webp');
+  background-position: center, center, 52% 70%;
+  border-color: rgba(168, 132, 47, 0.2);
+}
+
+.how {
+  background-image:
+    linear-gradient(90deg, rgba(255,255,255,.9), rgba(255,255,255,.73) 58%, rgba(255,253,249,.38)),
+    linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,253,249,.93)),
+    url('scenic/montana-road-bmw.webp');
+  background-position: center, center, center;
+}
+
+.why {
+  background-image:
+    linear-gradient(90deg, rgba(255,255,255,.95), rgba(255,255,255,.81) 64%, rgba(255,253,249,.52)),
+    linear-gradient(180deg, rgba(255,253,249,.82), rgba(255,255,255,.95)),
+    url('scenic/montana-road-bmw.webp');
+  background-position: center, center, 50% 68%;
+  border-color: rgba(168, 132, 47, 0.2);
+}
+
+.faq {
+  background-image:
+    linear-gradient(90deg, rgba(255,253,249,.48), rgba(255,255,255,.83) 47%, rgba(255,255,255,.96)),
+    linear-gradient(180deg, rgba(255,255,255,.6), rgba(255,253,249,.95)),
+    url('scenic/montana-road-truck.webp');
+  background-position: center, center, center;
+}
+
+.closer {
+  background-image:
+    radial-gradient(ellipse 70% 110% at 50% 100%, rgba(225,189,91,.2), transparent 62%),
+    linear-gradient(90deg, rgba(255,255,255,.9), rgba(255,253,249,.7)),
+    url('scenic/montana-road-truck.webp');
+  background-position: center, center, 50% 76%;
+}
+
+.foot {
+  background-image:
+    linear-gradient(90deg, rgba(255,255,255,.96), rgba(255,247,237,.9)),
+    url('scenic/montana-road-truck.webp');
+  background-position: center, center 88%;
+  border-color: rgba(168, 132, 47, 0.22);
+}
+
+:is(.book, .fix, .diag, .how, .why, .faq, .closer) h2,
+:is(.book, .fix, .diag, .how, .why, .faq, .closer) h3 {
+  text-shadow: 0 2px 18px rgba(255, 255, 255, 0.9);
+}
+
+.book-form,
+.card {
+  background: rgba(255, 255, 255, 0.84);
+  border-color: rgba(168, 132, 47, 0.25);
+  box-shadow: 0 22px 60px rgba(36, 47, 57, 0.12);
+  backdrop-filter: blur(14px) saturate(1.08);
+}
+
+.card li,
+.diag-list li,
+.faq-list,
+.faq details { border-color: rgba(23, 33, 43, 0.14); }
+
+input,
+select,
+textarea {
+  color: #17212b;
+  background-color: rgba(255, 255, 255, 0.82);
+  border-color: rgba(23, 33, 43, 0.2);
+}
+
+input::placeholder,
+textarea::placeholder { color: rgba(23, 33, 43, 0.4); }
+
+input:focus,
+select:focus,
+textarea:focus { background-color: #ffffff; }
+
+.chip span,
+.day span,
+.days-note { background: rgba(255, 255, 255, 0.66); }
+
+.tag-steel { background: rgba(23, 33, 43, 0.06); }
+.steps li { background: rgba(255, 255, 255, 0.48); padding: 1rem; border-radius: 0 0 12px 12px; }
+.why-stats div { background: rgba(255, 255, 255, 0.54); padding-block: 0.55rem; padding-right: 0.75rem; }
+
+@media (max-width: 760px) {
+  .road-scene {
+    height: clamp(250px, 68vw, 390px);
+  }
+
+  .road-scene-sedan {
+    background-image: url('scenic/montana-road-sedan-mobile.webp');
+    background-position: 70% center;
+  }
+
+  .road-scene-corvette {
+    background-image: url('scenic/montana-road-corvette-mobile.webp');
+    background-position: 30% center;
+  }
+
+  .road-scene-bmw {
+    background-image: url('scenic/montana-road-bmw-mobile.webp');
+    background-position: 72% center;
+  }
+
+  .road-scene-truck {
+    background-image: url('scenic/montana-road-truck-mobile.webp');
+    background-position: 30% center;
+  }
+
+  .book,
+  .fix,
+  .how,
+  .faq {
+    background-size: cover;
+    background-position: center;
+  }
+
+  .book {
+    background-image:
+      linear-gradient(180deg, rgba(255,255,255,.94), rgba(255,253,249,.98)),
+      url('scenic/montana-road-sedan-mobile.webp');
+  }
+
+  .fix {
+    background-image:
+      linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,253,249,.98)),
+      url('scenic/montana-road-corvette-mobile.webp');
+  }
+
+  .how {
+    background-image:
+      linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,253,249,.98)),
+      url('scenic/montana-road-bmw-mobile.webp');
+  }
+
+  .faq {
+    background-image:
+      linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,253,249,.98)),
+      url('scenic/montana-road-truck-mobile.webp');
+  }
+
+  .diag {
+    background-image:
+      linear-gradient(180deg, rgba(255,253,249,.86), rgba(255,255,255,.96)),
+      url('scenic/montana-road-corvette-mobile.webp');
+  }
+
+  .why {
+    background-image:
+      linear-gradient(180deg, rgba(255,253,249,.86), rgba(255,255,255,.96)),
+      url('scenic/montana-road-bmw-mobile.webp');
+  }
+
+  .closer,
+  .foot {
+    background-image:
+      linear-gradient(180deg, rgba(255,253,249,.78), rgba(255,255,255,.94)),
+      url('scenic/montana-road-truck-mobile.webp');
+  }
+
+  .book-form,
+  .card { backdrop-filter: blur(8px) saturate(1.04); }
+}
