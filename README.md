@@ -6,7 +6,7 @@ receipts, invoices) — this is the customer-facing site that feeds it.
 
 Built on `wiki/builds/local-business-website-seo-blueprint.md`.
 
-- Live URL when deployed: GitHub Pages only, per the GitHub-Only Publishing rule
+- Live: https://thomasg42.github.io/gold-mobile-mechanic-site/
 - Source of truth for the page: `docs/` (single page, no build step)
 - Booking backend: n8n workflow `Gold Mobile Mechanic — Website Booking Request`
   (`iZQeMd1Hiq3mV4Qf`) on `tggai.app.n8n.cloud`
@@ -53,7 +53,7 @@ nothing breaks.
 - Two-day jobs, dropped off: timing chains, head gaskets, anything internal to
   the engine. The drop-off address is never published — it goes out in the
   confirmation text.
-- $100 diagnostic, free of charge if the job is out of Thomas's realm.
+- $50 diagnostic, free of charge if the job is out of Thomas's realm.
 - Not offered: transmission rebuilds, body work, alignments, tire mounting.
 
 The day picker only ever generates Sun/Mon/Tue/Wed, and the n8n workflow
