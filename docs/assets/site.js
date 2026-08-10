@@ -200,7 +200,10 @@ function wireForm() {
       // never taken.
       const result = await readJson(response);
       if (result && result.ok === false) throw new Error('rejected');
-      showSent(form, payload);
+      // The request landed, but the calendar may not have taken the hold. Say so
+      // rather than promising a day that was never actually held.
+      const held = !result || result.calendarHeld !== false;
+      showSent(form, payload, held);
     } catch (err) {
       submit.disabled = false;
       msg.className = 'form-msg is-err';
@@ -300,15 +303,23 @@ function smsLink(payload) {
   return 'sms:' + CONFIG.phone + '?&body=' + encodeURIComponent(body);
 }
 
-function showSent(form, payload) {
+function showSent(form, payload, calendarHeld) {
   const day = new Date(payload.requestedDay + 'T12:00:00');
   const pretty = day.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+
+  const body = calendarHeld
+    ? '<h3>Day requested</h3>' +
+      '<p>' + escapeHtml(pretty) + ' for the ' + escapeHtml(payload.vehicle) + '.</p>' +
+      '<p class="hint">I text back to confirm the time and the price range. One car a day, so if that day is already claimed I will offer you the next open one.</p>'
+    // Calendar refused the hold. Do not imply the day is spoken for.
+    : '<h3>Got your details</h3>' +
+      '<p>' + escapeHtml(payload.vehicle) + ', for ' + escapeHtml(pretty) + '.</p>' +
+      '<p class="hint">My calendar did not take the hold, so I am scheduling this one by hand. I will reach out personally to lock the day in. Nothing is lost &mdash; I have everything you sent.</p>';
+
   form.innerHTML =
     '<div class="sent">' +
-    '<div class="sent-mark" aria-hidden="true">✓</div>' +
-    '<h3>Day requested</h3>' +
-    '<p>' + escapeHtml(pretty) + ' for the ' + escapeHtml(payload.vehicle) + '.</p>' +
-    '<p class="hint">I text back to confirm the time and the price range. One car a day, so if that day is already claimed I will offer you the next open one.</p>' +
+    '<div class="sent-mark" aria-hidden="true">' + (calendarHeld ? '✓' : '!') + '</div>' +
+    body +
     (hasPhone()
       ? '<p class="hint">Need it sooner? Call <a href="tel:' + CONFIG.phone + '">' + CONFIG.phoneDisplay + '</a>.</p>'
       : '') +
