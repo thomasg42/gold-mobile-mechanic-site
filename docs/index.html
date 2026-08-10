@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gold Mobile Mechanic | Mobile Auto Repair in Bozeman, MT</title>
+<meta name="description" content="One car a day, done right. Mobile brakes, oil, suspension and tune-ups at your driveway in Bozeman and the Gallatin Valley. $50 diagnostic, and it is free if the job is out of my realm.">
+<meta name="theme-color" content="#0b0c0d">
+<link rel="canonical" href="https://thomasg42.github.io/gold-mobile-mechanic-site/">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Gold Mobile Mechanic | Mobile Auto Repair in Bozeman, MT">
+<meta property="og:description" content="One car a day, done right. Brakes, oil, suspension and tune-ups at your driveway. $50 diagnostic.">
+<meta property="og:url" content="https://thomasg42.github.io/gold-mobile-mechanic-site/">
+<meta property="og:image" content="https://thomasg42.github.io/gold-mobile-mechanic-site/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<a class="skip" href="#book">Skip to booking</a>
+
+<header class="nav" id="nav">
+  <a class="brand" href="#top">
+    <span class="brand-mark" aria-hidden="true">G</span>
+    <span class="brand-text"><b>Gold</b> Mobile Mechanic</span>
+  </a>
+  <nav class="nav-links" aria-label="Primary">
+    <a href="#fix">What I fix</a>
+    <a href="#how">How it works</a>
+    <a href="#diagnostic">Diagnostic</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+  <div class="nav-cta">
+    <a class="btn btn-ghost" data-call href="#book">Call</a>
+    <a class="btn btn-gold" href="#book">Book a day</a>
+  </div>
+</header>
+
+<!-- ══ HERO — scroll-driven 3D before/after ══════════════════════════════ -->
+<section class="hero-scroll" id="top">
+  <div class="hero-sticky">
+    <canvas id="heroCanvas" aria-hidden="true"></canvas>
+    <div class="hero-hotspots" id="heroHotspots" aria-hidden="true"></div>
+    <div class="hero-vignette" aria-hidden="true"></div>
+
+    <div class="hero-state" aria-hidden="true">
+      <span class="state-before" id="stateBefore">Before</span>
+      <span class="state-rule"><i id="stateFill"></i></span>
+      <span class="state-after" id="stateAfter">After</span>
+    </div>
+
+    <div class="hero-copy">
+      <p class="eyebrow">Bozeman &middot; Belgrade &middot; Gallatin Valley</p>
+      <h1>I fix <em>one car</em> a day.</h1>
+      <p class="lede">So yours gets the whole day. Brakes, oil, suspension and tune&#8209;ups done in your driveway &mdash; no shop, no waiting room, no upsell.</p>
+      <div class="hero-actions">
+        <a class="btn btn-gold btn-lg" href="#book">Book my day</a>
+        <button class="btn btn-ghost btn-lg" type="button" data-open-voice>Talk it through</button>
+      </div>
+      <p class="hero-note"><b>$50 diagnostic.</b> If it turns out to be over my head, I tell you straight and you pay nothing.</p>
+    </div>
+
+    <div class="scroll-cue" aria-hidden="true"><span>Scroll to run the diagnostic</span><i></i></div>
+  </div>
+</section>
+
+<!-- ══ TRUST STRIP ══════════════════════════════════════════════════════ -->
+<section class="strip" aria-label="Why people book">
+  <ul>
+    <li><b>One car a day</b><span>Your job is the only job</span></li>
+    <li><b>I come to you</b><span>Driveway, lot or curbside</span></li>
+    <li><b>Sun &ndash; Wed</b><span>Four booking days a week</span></li>
+    <li><b>Straight answers</b><span>Out of my realm, I say so</span></li>
+  </ul>
+</section>
+
+<!-- ══ BOOKING ══════════════════════════════════════════════════════════ -->
+<section class="book" id="book">
+  <div class="wrap book-grid">
+    <div class="book-intro">
+      <p class="kicker">Book</p>
+      <h2>Tell me what it's doing. Pick your day.</h2>
+      <p>Two minutes. You describe the problem and the vehicle, you claim a day, and I text you back to confirm the time and the plan before anything starts.</p>
+      <ul class="ticks">
+        <li>Only one vehicle is booked per day, so days go fast.</li>
+        <li>No card, no deposit on this form.</li>
+        <li>I confirm the price range before I touch the car.</li>
+      </ul>
+      <p class="book-call" data-call-line>Rather just talk? <a data-call href="#book"></a>.</p>
+      <p class="book-call">Or hit <button type="button" class="linkish" data-open-voice>the voice line</button>.</p>
+    </div>
+
+    <form class="book-form" id="bookForm" novalidate>
+      <div class="field">
+        <label for="f-issue">What's it doing? <span class="req">*</span></label>
+        <textarea id="f-issue" name="issue" rows="3" required placeholder="Grinding when I brake at low speed, started about a week ago"></textarea>
+      </div>
+
+      <div class="row row-3">
+        <div class="field">
+          <label for="f-year">Year <span class="req">*</span></label>
+          <select id="f-year" name="year" required><option value="">Year</option></select>
+        </div>
+        <div class="field">
+          <label for="f-make">Make <span class="req">*</span></label>
+          <input id="f-make" name="make" required autocomplete="off" placeholder="Subaru">
+        </div>
+        <div class="field">
+          <label for="f-model">Model <span class="req">*</span></label>
+          <input id="f-model" name="model" required autocomplete="off" placeholder="Outback">
+        </div>
+      </div>
+
+      <fieldset class="field">
+        <legend>Closest to what you need</legend>
+        <div class="chips" id="jobType" role="radiogroup" aria-label="Job type">
+          <label class="chip"><input type="radio" name="jobType" value="Not sure" checked><span>Not sure yet</span></label>
+          <label class="chip"><input type="radio" name="jobType" value="One-day mobile"><span>One&#8209;day, at my place</span></label>
+          <label class="chip"><input type="radio" name="jobType" value="Two-day drop-off"><span>Two&#8209;day drop&#8209;off</span></label>
+        </div>
+        <p class="hint" id="jobTypeHint">Not sure is fine. That's what the diagnostic is for.</p>
+      </fieldset>
+
+      <div class="field">
+        <label>Pick a day <span class="req">*</span></label>
+        <div class="days" id="days" role="radiogroup" aria-label="Available days"></div>
+        <p class="hint">Sunday through Wednesday. One vehicle per day. Days shown are open requests &mdash; I confirm by text.</p>
+      </div>
+
+      <div class="row row-2">
+        <div class="field">
+          <label for="f-name">Your name <span class="req">*</span></label>
+          <input id="f-name" name="name" required autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="f-phone">Cell <span class="req">*</span></label>
+          <input id="f-phone" name="phone" type="tel" required autocomplete="tel" inputmode="tel" placeholder="(406) 555-0134">
+        </div>
+      </div>
+
+      <div class="row row-2">
+        <div class="field">
+          <label for="f-where">Where the car sits</label>
+          <input id="f-where" name="location" autocomplete="street-address" placeholder="Street + city, or ZIP">
+        </div>
+        <div class="field">
+          <label for="f-email">Email <span class="opt">optional</span></label>
+          <input id="f-email" name="email" type="email" autocomplete="email">
+        </div>
+      </div>
+
+      <p class="hp" aria-hidden="true"><label>Leave blank<input name="company" tabindex="-1" autocomplete="off"></label></p>
+
+      <button class="btn btn-gold btn-lg btn-block" type="submit" id="bookSubmit">Request this day</button>
+      <p class="form-msg" id="formMsg" role="status" aria-live="polite"></p>
+      <p class="fine">By sending this you're asking me to text you back. That's it.</p>
+    </form>
+  </div>
+</section>
+
+<!-- ══ WHAT I FIX ═══════════════════════════════════════════════════════ -->
+<section class="fix" id="fix">
+  <div class="wrap">
+    <p class="kicker">What I fix</p>
+    <h2>Two kinds of jobs. Be honest about which one you've got.</h2>
+
+    <div class="cards">
+      <article class="card card-day">
+        <header>
+          <span class="tag tag-gold">One day</span>
+          <h3>I come to you</h3>
+          <p>Mobile at your house, your work lot, wherever it's parked. In and out the same day.</p>
+        </header>
+        <ul>
+          <li><b>Brakes</b><span>Pads, rotors, calipers, bleed</span></li>
+          <li><b>Oil change</b><span>Oil and filter, full check-over</span></li>
+          <li><b>Suspension</b><span>Struts, shocks, control arms, links, bushings</span></li>
+          <li><b>Tune-up</b><span>Spark plugs, coil packs, wires, filters</span></li>
+          <li><b>Transmission fluid</b><span>Fluid and filter service</span></li>
+          <li><b>Pan work</b><span>Oil pan or transmission pan, gaskets</span></li>
+        </ul>
+      </article>
+
+      <article class="card card-drop">
+        <header>
+          <span class="tag tag-steel">Two days</span>
+          <h3>Drop it off with me</h3>
+          <p>Anything that goes inside the engine needs a controlled space and a second day. You leave it with me and pick it up when it's done.</p>
+        </header>
+        <ul>
+          <li><b>Timing chain / belt</b><span>Chains, guides, tensioners, belts</span></li>
+          <li><b>Internal engine work</b><span>Head gaskets, valve covers, seals, deeper teardown</span></li>
+          <li><b>Anything that opens the block</b><span>If it comes apart, it gets two days</span></li>
+        </ul>
+        <p class="card-note">Drop-off address goes out with your confirmation text, not on the internet.</p>
+      </article>
+    </div>
+
+    <p class="fix-out">Transmission rebuilds, body work, alignments, tire mounting and anything needing a lift or a rack &mdash; that's not me. I'll tell you on the phone and point you somewhere good instead of wasting your day.</p>
+  </div>
+</section>
+
+<!-- ══ DIAGNOSTIC ═══════════════════════════════════════════════════════ -->
+<section class="diag" id="diagnostic">
+  <div class="wrap diag-grid">
+    <div>
+      <p class="kicker">The diagnostic</p>
+      <h2>$50 to actually find out.</h2>
+      <p class="big">I come out, I listen to the whole story, I put hands and tools on it, and I troubleshoot until I know what's wrong. You get the real answer and a price before any work starts.</p>
+      <p class="big">If it turns out the repair is over my head or outside what I do, I say so on the spot &mdash; <b>and that visit is free of charge.</b> I'd rather lose the hundred than pretend.</p>
+      <a class="btn btn-gold btn-lg" href="#book">Book the diagnostic</a>
+    </div>
+    <ul class="diag-list">
+      <li><span>01</span><div><b>You talk, I listen</b>Noises, when it happens, what changed, what the last shop told you.</div></li>
+      <li><span>02</span><div><b>Hands on it</b>Codes pulled, road test if it's safe, the actual system inspected.</div></li>
+      <li><span>03</span><div><b>Straight verdict</b>What's wrong, what it costs, what can wait, what can't.</div></li>
+      <li><span>04</span><div><b>Your call</b>Fix it that day, book the drop-off, or take the answer and go elsewhere.</div></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══ HOW IT WORKS ═════════════════════════════════════════════════════ -->
+<section class="how" id="how">
+  <div class="wrap">
+    <p class="kicker">How it works</p>
+    <h2>Three steps and a text.</h2>
+    <ol class="steps">
+      <li><b>Describe it</b><span>Fill the form or talk to the voice line. Year, make, model, and what it's doing.</span></li>
+      <li><b>Claim a day</b><span>Sunday, Monday, Tuesday or Wednesday. One car per day, so the day is yours.</span></li>
+      <li><b>I confirm, then I show up</b><span>You get a text with the time and the price range before I turn a bolt.</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ══ ONE CAR A DAY ════════════════════════════════════════════════════ -->
+<section class="why">
+  <div class="wrap why-grid">
+    <div>
+      <p class="kicker">Why one car</p>
+      <h2>Because rushed work is how people get hurt.</h2>
+      <p>A shop runs six cars through a bay at once and every one of them waits on a part, a lift or a tech. I take one. If your brake job turns into a seized caliper bolt, there's nobody behind you in line, and the job still gets done today.</p>
+    </div>
+    <div class="why-stats">
+      <div><b>1</b><span>vehicle booked per day</span></div>
+      <div><b>4</b><span>booking days each week</span></div>
+      <div><b>$50</b><span>diagnostic, waived if it's out of my realm</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FAQ ══════════════════════════════════════════════════════════════ -->
+<section class="faq" id="faq">
+  <div class="wrap">
+    <p class="kicker">Questions</p>
+    <h2>The ones I get every week.</h2>
+    <div class="faq-list">
+      <details><summary>Do you really only take one car a day?</summary><p>Yes. That's the whole model. It's why the day doesn't blow up when a bolt snaps, and it's why days book out.</p></details>
+      <details><summary>Which days can I book?</summary><p>Sunday, Monday, Tuesday and Wednesday. Pick one on the form and I'll confirm by text.</p></details>
+      <details><summary>What does the $50 diagnostic cover?</summary><p>Me coming out, hearing the whole story, pulling codes, testing, and giving you a real diagnosis with a price. If the fix is outside what I do, I tell you and the visit is free.</p></details>
+      <details><summary>Why do some jobs have to be dropped off?</summary><p>Anything internal to the engine &mdash; timing chains, head gaskets, teardown &mdash; takes two days and a controlled space. Those come to my place. Everything else I do at yours.</p></details>
+      <details><summary>Do I need to buy the parts?</summary><p>No. I'll quote parts and labor together before anything starts. If you already bought parts, bring them and we'll talk about it.</p></details>
+      <details><summary>Where do you go?</summary><p>Bozeman, Belgrade, Four Corners, Manhattan, Livingston and the rest of the Gallatin Valley. Further out, ask.</p></details>
+      <details><summary>What don't you do?</summary><p>Transmission rebuilds, body work, alignments, tire mounting, and anything that needs a rack. I'll say so on the first call.</p></details>
+      <details><summary>How do I pay?</summary><p>When the work is done, from the invoice I hand you. No deposit to book.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CLOSER ═══════════════════════════════════════════════════════════ -->
+<section class="closer">
+  <div class="wrap">
+    <h2>Four days a week. One car a day.</h2>
+    <p>If yours is the one, claim the day.</p>
+    <div class="hero-actions">
+      <a class="btn btn-gold btn-lg" href="#book">Book my day</a>
+      <a class="btn btn-ghost btn-lg" data-call href="#book"></a>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap foot-grid">
+    <div>
+      <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">G</span><span class="brand-text"><b>Gold</b> Mobile Mechanic</span></a>
+      <p>Mobile auto repair, Bozeman &amp; the Gallatin Valley, Montana.</p>
+    </div>
+    <div>
+      <b>Booking days</b>
+      <p>Sunday &middot; Monday &middot; Tuesday &middot; Wednesday</p>
+    </div>
+    <div>
+      <b>Get in touch</b>
+      <p data-call-line><a data-call href="#book"></a></p>
+    </div>
+  </div>
+  <p class="copy">&copy; <span id="year"></span> Gold Mobile Mechanic. Built by <a href="https://www.forevergoldai.com" rel="noopener">Forever Gold AI</a>.</p>
+</footer>
+
+<!-- ══ VOICE AGENT ══════════════════════════════════════════════════════ -->
+<div class="voice" id="voice" data-state="idle">
+  <button class="voice-fab" id="voiceFab" type="button" aria-expanded="false" aria-controls="voicePanel">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15a3.5 3.5 0 0 0 3.5-3.5v-5a3.5 3.5 0 0 0-7 0v5A3.5 3.5 0 0 0 12 15Z"/><path d="M18.5 11.5a6.5 6.5 0 0 1-13 0"/><path d="M12 18v3"/></svg>
+    <span>Talk to the shop</span>
+  </button>
+  <div class="voice-panel" id="voicePanel" hidden>
+    <div class="voice-head">
+      <b>Gold Mobile Mechanic</b>
+      <button type="button" id="voiceClose" aria-label="Close voice chat">&times;</button>
+    </div>
+    <div class="voice-body" id="voiceBody">
+      <p class="voice-hint">Tell it the year, make, model and what the car is doing. It books the day for you.</p>
+      <div id="voiceMount"></div>
+      <p class="voice-fallback" id="voiceFallback" hidden>Voice line is not connected yet. <a href="#book">Use the booking form</a> and I will text you back.</p>
+    </div>
+  </div>
+</div>
+
+<script type="application/ld+json" id="businessSchema">
+{
+  "@context": "https://schema.org",
+  "@type": "AutoRepair",
+  "@id": "https://thomasg42.github.io/gold-mobile-mechanic-site/#business",
+  "name": "Gold Mobile Mechanic",
+  "description": "Mobile auto repair in Bozeman and the Gallatin Valley. Brakes, oil changes, suspension, tune-ups and fluid services done at your location. One vehicle booked per day.",
+  "url": "https://thomasg42.github.io/gold-mobile-mechanic-site/",
+  "priceRange": "$$",
+  "image": "https://thomasg42.github.io/gold-mobile-mechanic-site/assets/og.png",
+  "address": { "@type": "PostalAddress", "addressLocality": "Bozeman", "addressRegion": "MT", "addressCountry": "US" },
+  "areaServed": [
+    { "@type": "City", "name": "Bozeman" },
+    { "@type": "City", "name": "Belgrade" },
+    { "@type": "City", "name": "Manhattan" },
+    { "@type": "City", "name": "Livingston" },
+    { "@type": "AdministrativeArea", "name": "Gallatin County, Montana" }
+  ],
+  "openingHoursSpecification": [
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Sunday","Monday","Tuesday","Wednesday"], "opens": "08:00", "closes": "18:00" }
+  ],
+  "makesOffer": [
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Mobile diagnostic" }, "price": "50", "priceCurrency": "USD" },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Mobile brake service" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Mobile oil change" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Mobile suspension repair" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Mobile tune-up, spark plugs and coil packs" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Transmission fluid and pan service" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Timing chain and internal engine repair, drop-off" } }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Do you really only take one car a day?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. One vehicle is booked per day so the job is never rushed and surprises do not push the schedule." } },
+    { "@type": "Question", "name": "Which days can I book?", "acceptedAnswer": { "@type": "Answer", "text": "Sunday, Monday, Tuesday and Wednesday. Requests are confirmed by text." } },
+    { "@type": "Question", "name": "What does the $50 diagnostic cover?", "acceptedAnswer": { "@type": "Answer", "text": "A mobile visit, a full conversation about the symptoms, codes pulled, testing, and a real diagnosis with a price before work starts. If the repair is outside what Gold Mobile Mechanic does, the visit is free of charge." } },
+    { "@type": "Question", "name": "Why do some jobs have to be dropped off?", "acceptedAnswer": { "@type": "Answer", "text": "Internal engine work such as timing chains and head gaskets takes two days and a controlled space, so those vehicles are dropped off. Everything else is done at your location in one day." } },
+    { "@type": "Question", "name": "Where do you go?", "acceptedAnswer": { "@type": "Answer", "text": "Bozeman, Belgrade, Four Corners, Manhattan, Livingston and the rest of the Gallatin Valley." } }
+  ]
+}
+</script>
+
+<script src="assets/site.js" type="module"></script>
+</body>
+</html>
