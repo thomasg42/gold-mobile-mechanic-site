@@ -13,6 +13,10 @@ export const CONFIG = {
   // with anything already claimed on the calendar removed. Same workflow.
   availabilityEndpoint: 'https://tggai.app.n8n.cloud/webhook/gmm-availability',
   availabilityTimeoutMs: 7000,
+  // Keep an already-open tab synchronized with calendar changes. The booking
+  // POST still re-checks the day server-side; this closes the visual stale-tab
+  // gap before the customer reaches Submit.
+  availabilityRefreshMs: 30000,
 
   // ElevenLabs Conversational AI agent — "Ken Melvoice", the same agent that
   // answers the phone, so the site and the phone line give one answer. Public
@@ -40,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
   fillYear();
   buildYearOptions();
   buildDayOptions();
+  startAvailabilityRefresh();
   jobTypeHints();
   wireForm();
   wireVoice();
@@ -109,7 +114,20 @@ function buildYearOptions() {
 // One car a day, so a day that has already been claimed must never be offered
 // to the next person. The calendar is the authority: the server returns the
 // days still open and those are the only chips drawn.
-async function buildDayOptions() {
+let dayRefreshPromise = null;
+let bookingSubmitPending = false;
+
+async function buildDayOptions(options = {}) {
+  if (dayRefreshPromise) return dayRefreshPromise;
+  dayRefreshPromise = refreshDayOptions(options);
+  try {
+    return await dayRefreshPromise;
+  } finally {
+    dayRefreshPromise = null;
+  }
+}
+
+async function refreshDayOptions({ quiet = false } = {}) {
   const wrap = $('#days');
   if (!wrap) return;
 
@@ -123,13 +141,44 @@ async function buildDayOptions() {
     });
   }
 
-  setDayPickerReady(false);
-  wrap.classList.add('is-loading');
-  wrap.innerHTML = '<p class="days-note">Checking which days are still open…</p>';
+  const selected = $('input[name="day"]:checked', wrap)?.value || '';
+  if (!quiet) {
+    setDayPickerReady(false);
+    wrap.classList.add('is-loading');
+    wrap.innerHTML = '<p class="days-note">Checking which days are still open…</p>';
+  }
 
   const open = await fetchOpenDays();
   wrap.classList.remove('is-loading');
-  renderDays(open);
+  const selectedStillOpen = Boolean(selected && Array.isArray(open) && open.includes(selected));
+  renderDays(open, selectedStillOpen ? selected : '');
+
+  if (quiet && selected && !selectedStillOpen) {
+    const msg = $('#formMsg');
+    if (msg) {
+      msg.className = 'form-msg is-err';
+      msg.textContent = Array.isArray(open)
+        ? 'That day was just claimed and is now off the board. Pick another open day.'
+        : 'I cannot re-check that day right now, so it has been cleared until the calendar is available.';
+    }
+  }
+}
+
+// Google Calendar is the single source of truth. Refresh quietly while the
+// customer is looking at the form, and immediately when they return to the tab.
+// A saved manual/voice event therefore disappears without requiring a reload.
+function startAvailabilityRefresh() {
+  const interval = Number(CONFIG.availabilityRefreshMs);
+  const refresh = () => {
+    if (document.hidden || bookingSubmitPending || !$('#bookForm') || !$('#days')) return;
+    buildDayOptions({ quiet: true });
+  };
+
+  if (Number.isFinite(interval) && interval > 0) setInterval(refresh, interval);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) refresh();
+  });
+  window.addEventListener('focus', refresh);
 }
 
 // Days the calendar says are still free. Null on any failure — never a partial
@@ -158,7 +207,7 @@ async function fetchOpenDays() {
   }
 }
 
-function renderDays(isoDays) {
+function renderDays(isoDays, selectedDay = '') {
   const wrap = $('#days');
   if (!wrap) return;
 
@@ -188,7 +237,7 @@ function renderDays(isoDays) {
     const label = document.createElement('label');
     label.className = 'day';
     label.innerHTML =
-      '<input type="radio" name="day" value="' + iso + '">' +
+      '<input type="radio" name="day" value="' + iso + '"' + (iso === selectedDay ? ' checked' : '') + '>' +
       '<span><span class="d-dow">' + dows[date.getDay()] + '</span>' +
       '<span class="d-date">' + (date.getMonth() + 1) + '/' + date.getDate() + '</span></span>';
     frag.appendChild(label);
@@ -240,6 +289,7 @@ function wireForm() {
     }
 
     const payload = collect(form);
+    bookingSubmitPending = true;
     submit.disabled = true;
     msg.className = 'form-msg';
     msg.textContent = 'Sending…';
@@ -258,6 +308,7 @@ function wireForm() {
       // Someone claimed that day between page load and submit. Nothing the
       // customer did wrong, and nothing they typed should be lost.
       if (result && result.reason === 'day_taken') {
+        bookingSubmitPending = false;
         await showDayTaken(form, payload, result.open);
         return;
       }
@@ -267,8 +318,10 @@ function wireForm() {
       // The request landed, but the calendar may not have taken the hold. Say so
       // rather than promising a day that was never actually held.
       const held = !result || result.calendarHeld !== false;
+      bookingSubmitPending = false;
       showSent(form, payload, held);
     } catch (err) {
+      bookingSubmitPending = false;
       submit.disabled = false;
       msg.className = 'form-msg is-err';
       // Never swallow a lead. With a number configured, hand them a pre-filled

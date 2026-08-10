@@ -61,7 +61,12 @@ Sun/Mon/Tue/Wed dates. Held dates are not rendered. If availability cannot be
 verified, the picker fails closed and shows no dates instead of guessing. The
 booking webhook checks the calendar again immediately before creating the hold,
 so a stale browser receives `409 day_taken` and redraws the remaining dates
-without losing anything the customer typed.
+without losing anything the customer typed. An already-open page also refreshes
+every 30 seconds and whenever the tab regains focus. If an active Google Calendar
+event title contains `Gold Mobile Mechanic` (for example `Gold Mobile Mechanic
+Work` or `Gold Mobile Mechanic Diagnosis`), every covered date is treated as a
+whole-day block even when the event itself is only one hour long. Existing `GMM
+HOLD` and `GMM BLOCK` titles remain supported.
 
 ## Configuration
 
@@ -70,7 +75,8 @@ Everything re-pointable is at the top of `docs/assets/site.js`:
 ```js
 bookingEndpoint     n8n webhook that receives the booking request
 availabilityEndpoint read-only webhook returning calendar-verified open days
-elevenLabsAgentId   paste the agent id to switch on the real voice widget
+availabilityRefreshMs automatic open-tab refresh interval
+elevenLabsAgentId   public Ken Melvoice widget id
 phone / phoneDisplay
 ```
 

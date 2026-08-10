@@ -32,8 +32,9 @@ to read `built` and re-verify (below).
    (the runtime patch in `applyPhone()` is a convenience; crawlers want it in
    the served HTML), and update `ELEVENLABS_AGENT.md`, which currently instructs
    the agent to read out no number.
-2. **ElevenLabs agent.** Create it from `ELEVENLABS_AGENT.md`, paste the id into
-   `CONFIG.elevenLabsAgentId`, redeploy.
+2. **ElevenLabs calendar tools.** Ken Melvoice is live on the page, but the two
+   webhook tools in `ELEVENLABS_AGENT.md` still need to be configured in the
+   ElevenLabs dashboard before voice can read and reserve the same open dates.
 3. **Custom domain.** `github.io/gold-mobile-mechanic-site` is weak on a truck
    or a business card. A real domain pointed at Pages fixes it — remember to
    update `canonical`, the `og:` URLs, the JSON-LD `@id`/`url`, `sitemap.xml`
@@ -71,6 +72,7 @@ n8n `Gold Mobile Mechanic — Website Booking Request` (`iZQeMd1Hiq3mV4Qf`),
 | Case | Result |
 |---|---|
 | Availability GET | `200` with calendar-verified `open[]` and `taken[]` dates |
+| Manual calendar event titled `Gold Mobile Mechanic ...` | Every covered date moves to `taken[]`, even for a short timed event |
 | Valid Sun–Wed request | `200 {"ok":true,"calendarHeld":true}` + 8–5 hold on the calendar |
 | Second request for the same day | `409 {"ok":false,"reason":"day_taken"}` + refreshed `open[]` |
 | Friday | `400 {"ok":false,"errors":["requestedDay"]}` |
