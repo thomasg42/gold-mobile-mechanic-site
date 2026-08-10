@@ -119,13 +119,13 @@
       </div>
 
       <fieldset class="field">
-        <legend>Closest to what you need</legend>
-        <div class="chips" id="jobType" role="radiogroup" aria-label="Job type">
-          <label class="chip"><input type="radio" name="jobType" value="Not sure" checked><span>Not sure yet</span></label>
-          <label class="chip"><input type="radio" name="jobType" value="One-day mobile"><span>One&#8209;day, at my place</span></label>
-          <label class="chip"><input type="radio" name="jobType" value="Two-day drop-off"><span>Two&#8209;day drop&#8209;off</span></label>
+        <legend>Where should the car be worked on?</legend>
+        <div class="chips" id="jobType" role="radiogroup" aria-label="Service location preference">
+          <label class="chip"><input type="radio" name="jobType" value="At my place"><span>At my place</span></label>
+          <label class="chip"><input type="radio" name="jobType" value="Drop it off"><span>Drop it off</span></label>
+          <label class="chip"><input type="radio" name="jobType" value="Not sure yet" checked><span>Not sure yet</span></label>
         </div>
-        <p class="hint" id="jobTypeHint">Not sure is fine. That's what the diagnostic is for.</p>
+        <p class="hint" id="jobTypeHint">Not sure is fine. The diagnostic decides the best place and how long the repair needs.</p>
       </fieldset>
 
       <div class="field">
@@ -190,14 +190,14 @@
 
       <article class="card card-drop">
         <header>
-          <span class="tag tag-steel">Two days</span>
+          <span class="tag tag-steel">2&ndash;3 days</span>
           <h3>Drop it off with me</h3>
-          <p>Anything that goes inside the engine needs a controlled space and a second day. You leave it with me and pick it up when it's done.</p>
+          <p>Anything that goes inside the engine needs a controlled space and can take two to three days. You leave it with me and pick it up when it's done.</p>
         </header>
         <ul>
           <li><b>Timing chain / belt</b><span>Chains, guides, tensioners, belts</span></li>
           <li><b>Internal engine work</b><span>Head gaskets, valve covers, seals, deeper teardown</span></li>
-          <li><b>Anything that opens the block</b><span>If it comes apart, it gets two days</span></li>
+          <li><b>Anything that opens the block</b><span>Big engine repairs can take three days</span></li>
         </ul>
         <p class="card-note">Drop-off address goes out with your confirmation text, not on the internet.</p>
       </article>
@@ -264,7 +264,7 @@
       <details><summary>Do you really only take one car a day?</summary><p>Yes. That's the whole model. It's why the day doesn't blow up when a bolt snaps, and it's why days book out.</p></details>
       <details><summary>Which days can I book?</summary><p>Sunday, Monday, Tuesday and Wednesday. Pick one on the form and I'll confirm by text.</p></details>
       <details><summary>What does the $50 diagnostic cover?</summary><p>Me coming out, hearing the whole story, pulling codes, testing, and giving you a real diagnosis with a price. If the fix is outside what I do, I tell you and the visit is free.</p></details>
-      <details><summary>Why do some jobs have to be dropped off?</summary><p>Anything internal to the engine &mdash; timing chains, head gaskets, teardown &mdash; takes two days and a controlled space. Those come to my place. Everything else I do at yours.</p></details>
+      <details><summary>Why do some jobs have to be dropped off?</summary><p>Anything internal to the engine &mdash; timing chains, head gaskets, teardown &mdash; can take two to three days and needs a controlled space. Those come to my place. The diagnostic decides the right setup before any repair is booked.</p></details>
       <details><summary>Do I need to buy the parts?</summary><p>No. I'll quote parts and labor together before anything starts. If you already bought parts, bring them and we'll talk about it.</p></details>
       <details><summary>Where do you go?</summary><p>Bozeman, Belgrade, Four Corners, Manhattan, Livingston and the rest of the Gallatin Valley. Further out, ask.</p></details>
       <details><summary>What don't you do?</summary><p>Transmission rebuilds, body work, alignments, tire mounting, and anything that needs a rack. I'll say so on the first call.</p></details>
@@ -363,7 +363,7 @@
     { "@type": "Question", "name": "Do you really only take one car a day?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. One vehicle is booked per day so the job is never rushed and surprises do not push the schedule." } },
     { "@type": "Question", "name": "Which days can I book?", "acceptedAnswer": { "@type": "Answer", "text": "Sunday, Monday, Tuesday and Wednesday. Requests are confirmed by text." } },
     { "@type": "Question", "name": "What does the $50 diagnostic cover?", "acceptedAnswer": { "@type": "Answer", "text": "A mobile visit, a full conversation about the symptoms, codes pulled, testing, and a real diagnosis with a price before work starts. If the repair is outside what Gold Mobile Mechanic does, the visit is free of charge." } },
-    { "@type": "Question", "name": "Why do some jobs have to be dropped off?", "acceptedAnswer": { "@type": "Answer", "text": "Internal engine work such as timing chains and head gaskets takes two days and a controlled space, so those vehicles are dropped off. Everything else is done at your location in one day." } },
+    { "@type": "Question", "name": "Why do some jobs have to be dropped off?", "acceptedAnswer": { "@type": "Answer", "text": "Internal engine work such as timing chains and head gaskets can take two to three days and needs a controlled space, so those vehicles are dropped off. The diagnostic determines the right location and schedule before repair." } },
     { "@type": "Question", "name": "Where do you go?", "acceptedAnswer": { "@type": "Answer", "text": "Bozeman, Belgrade, Four Corners, Manhattan, Livingston and the rest of the Gallatin Valley." } }
   ]
 }

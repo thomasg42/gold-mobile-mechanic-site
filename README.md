@@ -50,9 +50,12 @@ nothing breaks.
 - Booking days: Sunday, Monday, Tuesday, Wednesday only. One vehicle per day.
 - One-day jobs, done at the customer's location: brakes, oil, suspension,
   tune-ups (plugs and coils), transmission fluid, oil pan and transmission pan.
-- Two-day jobs, dropped off: timing chains, head gaskets, anything internal to
+- Two- to three-day jobs, dropped off: timing chains, head gaskets, anything internal to
   the engine. The drop-off address is never published — it goes out in the
   confirmation text.
+- The form asks only for location preference: mobile service at the customer's
+  place (higher cost), drop-off (lower cost), or not sure yet. The diagnostic,
+  not the customer, determines whether the repair is a one-day or 2–3-day job.
 - $50 diagnostic, free of charge if the job is out of Thomas's realm.
 - Not offered: transmission rebuilds, body work, alignments, tire mounting.
 

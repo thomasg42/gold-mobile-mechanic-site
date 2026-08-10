@@ -256,9 +256,9 @@ function jobTypeHints() {
   const group = $('#jobType');
   if (!hint || !group) return;
   const text = {
-    'Not sure': "Not sure is fine. That's what the diagnostic is for.",
-    'One-day mobile': 'Brakes, oil, suspension, tune-ups and fluid work happen where the car is parked.',
-    'Two-day drop-off': 'Internal engine work takes two days. The drop-off address comes with your confirmation text.',
+    'At my place': 'Mobile service at your location costs more because I bring the work to you.',
+    'Drop it off': 'Drop-off service costs less when the repair can be done at my place.',
+    'Not sure yet': 'Not sure is fine. The diagnostic decides the best place and how long the repair needs.',
   };
   group.addEventListener('change', (event) => {
     const value = event.target.value;
