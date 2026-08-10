@@ -334,6 +334,23 @@ select { appearance: none; background-image: linear-gradient(45deg, transparent 
 .day input:checked + span .d-dow { color: var(--gold-hi); }
 .day input:focus-visible + span { outline: 2px solid var(--gold-hi); outline-offset: 2px; }
 
+/* The picker asks the calendar which days are still open, so it has a loading
+   state and an all-claimed state. Both span the full grid rather than sitting
+   in one cell. */
+.days-note {
+  grid-column: 1 / -1; margin: 0;
+  font-size: 0.88rem; line-height: 1.5; color: var(--paper-3);
+  padding: 0.7rem 0.8rem;
+  border: 1px dashed var(--line-2); border-radius: 10px;
+}
+.days.is-loading .days-note { color: var(--paper-3); opacity: 0.85; }
+.days-retry {
+  display: inline; margin-left: 0.35rem; padding: 0; border: 0;
+  color: var(--gold-hi); background: none; font: inherit; font-weight: 700;
+  text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+}
+.days-retry:focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 3px; }
+
 .hint { font-size: 0.85rem; color: var(--paper-3); }
 .fine { font-size: 0.82rem; color: var(--paper-3); text-align: center; }
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }

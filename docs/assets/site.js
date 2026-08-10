@@ -9,6 +9,11 @@ export const CONFIG = {
   // workflow. Leave as-is unless the workflow is moved.
   bookingEndpoint: 'https://tggai.app.n8n.cloud/webhook/gmm-booking',
 
+  // Read-only companion to the booking webhook: returns the days still open,
+  // with anything already claimed on the calendar removed. Same workflow.
+  availabilityEndpoint: 'https://tggai.app.n8n.cloud/webhook/gmm-availability',
+  availabilityTimeoutMs: 7000,
+
   // ElevenLabs Conversational AI agent — "Ken Melvoice", the same agent that
   // answers the phone, so the site and the phone line give one answer. Public
   // by design: the widget is client-side and the id is visible in the page.
@@ -22,10 +27,6 @@ export const CONFIG = {
   phone: '',
   phoneDisplay: '',
 
-  // 0 = Sunday ... 3 = Wednesday
-  bookingWeekdays: [0, 1, 2, 3],
-  daysToOffer: 6,
-  leadTimeDays: 1,
 };
 
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -105,46 +106,100 @@ function buildYearOptions() {
   select.appendChild(frag);
 }
 
-// Next open Sun/Mon/Tue/Wed, starting after the lead time. One car a day is a
-// promise made on the page, so the confirmation text is what actually holds
-// the slot — these chips are requests, and the copy says so.
-function buildDayOptions() {
+// One car a day, so a day that has already been claimed must never be offered
+// to the next person. The calendar is the authority: the server returns the
+// days still open and those are the only chips drawn.
+async function buildDayOptions() {
+  const wrap = $('#days');
+  if (!wrap) return;
+
+  // Bound once, here — the chips get redrawn when a day is taken mid-session,
+  // and re-binding on every render would fire this handler N times per click.
+  if (!wrap.dataset.bound) {
+    wrap.dataset.bound = 'true';
+    wrap.addEventListener('change', () => wrap.classList.remove('is-invalid'));
+    wrap.addEventListener('click', (event) => {
+      if (event.target.closest('[data-retry-days]')) buildDayOptions();
+    });
+  }
+
+  setDayPickerReady(false);
+  wrap.classList.add('is-loading');
+  wrap.innerHTML = '<p class="days-note">Checking which days are still open…</p>';
+
+  const open = await fetchOpenDays();
+  wrap.classList.remove('is-loading');
+  renderDays(open);
+}
+
+// Days the calendar says are still free. Null on any failure — never a partial
+// or invented list, because a wrong "open" here books two cars on one day.
+async function fetchOpenDays() {
+  const endpoint = String(CONFIG.availabilityEndpoint || '').trim();
+  if (!endpoint || typeof fetch !== 'function') return null;
+
+  const controller = typeof AbortController === 'function' ? new AbortController() : null;
+  const timer = controller
+    ? setTimeout(() => controller.abort(), CONFIG.availabilityTimeoutMs)
+    : null;
+
+  try {
+    const options = { method: 'GET', cache: 'no-store' };
+    if (controller) options.signal = controller.signal;
+    const response = await fetch(endpoint, options);
+    if (!response.ok) return null;
+    const data = await readJson(response);
+    if (!data || !Array.isArray(data.open)) return null;
+    return data.open.filter((iso) => /^\d{4}-\d{2}-\d{2}$/.test(iso));
+  } catch (err) {
+    return null;
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+
+function renderDays(isoDays) {
   const wrap = $('#days');
   if (!wrap) return;
 
   const dows = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const cursor = new Date();
-  cursor.setHours(0, 0, 0, 0);
-  cursor.setDate(cursor.getDate() + CONFIG.leadTimeDays);
+  wrap.innerHTML = '';
 
-  const frag = document.createDocumentFragment();
-  let found = 0;
-  let guard = 0;
-
-  while (found < CONFIG.daysToOffer && guard < 120) {
-    guard += 1;
-    if (CONFIG.bookingWeekdays.includes(cursor.getDay())) {
-      const iso = toISODate(cursor);
-      const label = document.createElement('label');
-      label.className = 'day';
-      label.innerHTML =
-        '<input type="radio" name="day" value="' + iso + '">' +
-        '<span><span class="d-dow">' + dows[cursor.getDay()] + '</span>' +
-        '<span class="d-date">' + (cursor.getMonth() + 1) + '/' + cursor.getDate() + '</span></span>';
-      frag.appendChild(label);
-      found += 1;
-    }
-    cursor.setDate(cursor.getDate() + 1);
+  // Fail closed. If the calendar cannot be checked, do not invent dates that
+  // may already belong to somebody else.
+  if (!Array.isArray(isoDays)) {
+    wrap.innerHTML = '<div class="days-note">I cannot verify the calendar right now, so no days are being shown. ' +
+      '<button type="button" class="days-retry" data-retry-days>Check again</button></div>';
+    setDayPickerReady(false);
+    return;
   }
 
+  if (!isoDays.length) {
+    wrap.innerHTML = '<div class="days-note">Every day on the board is claimed right now. ' +
+      '<button type="button" class="days-retry" data-retry-days>Check again</button></div>';
+    setDayPickerReady(false);
+    return;
+  }
+
+  const frag = document.createDocumentFragment();
+  for (const iso of isoDays) {
+    // Noon, so a timezone offset can never roll the label onto the wrong date.
+    const date = new Date(iso + 'T12:00:00');
+    const label = document.createElement('label');
+    label.className = 'day';
+    label.innerHTML =
+      '<input type="radio" name="day" value="' + iso + '">' +
+      '<span><span class="d-dow">' + dows[date.getDay()] + '</span>' +
+      '<span class="d-date">' + (date.getMonth() + 1) + '/' + date.getDate() + '</span></span>';
+    frag.appendChild(label);
+  }
   wrap.appendChild(frag);
-  wrap.addEventListener('change', () => wrap.classList.remove('is-invalid'));
+  setDayPickerReady(true);
 }
 
-function toISODate(date) {
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  return date.getFullYear() + '-' + m + '-' + d;
+function setDayPickerReady(ready) {
+  const submit = $('#bookSubmit');
+  if (submit) submit.disabled = !ready;
 }
 
 function jobTypeHints() {
@@ -195,11 +250,19 @@ function wireForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      if (!response.ok) throw new Error('HTTP ' + response.status);
       // Trust the body, not just the status. A rejection that still returns 200
       // would otherwise render the confirmation panel for a booking that was
-      // never taken.
+      // never taken — and a 409 is a real answer, not a failure.
       const result = await readJson(response);
+
+      // Someone claimed that day between page load and submit. Nothing the
+      // customer did wrong, and nothing they typed should be lost.
+      if (result && result.reason === 'day_taken') {
+        await showDayTaken(form, payload, result.open);
+        return;
+      }
+
+      if (!response.ok) throw new Error('HTTP ' + response.status);
       if (result && result.ok === false) throw new Error('rejected');
       // The request landed, but the calendar may not have taken the hold. Say so
       // rather than promising a day that was never actually held.
@@ -304,6 +367,31 @@ function smsLink(payload) {
   return 'sms:' + CONFIG.phone + '?&body=' + encodeURIComponent(body);
 }
 
+// The requested day went to someone else. Redraw the picker from the days the
+// server says are still open and leave every other field exactly as typed.
+async function showDayTaken(form, payload, open) {
+  const msg = $('#formMsg');
+  const submit = $('#bookSubmit');
+  const supplied = Array.isArray(open)
+    ? open.filter((iso) => /^\d{4}-\d{2}-\d{2}$/.test(iso))
+    : null;
+  const days = supplied === null ? await fetchOpenDays() : supplied;
+
+  renderDays(days);
+
+  const day = new Date(payload.requestedDay + 'T12:00:00');
+  const pretty = day.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+
+  if (submit) submit.disabled = !Array.isArray(days) || days.length === 0;
+  if (msg) {
+    msg.className = 'form-msg is-err';
+    msg.textContent = pretty + ' just got claimed — one car a day, so it is off the board. ' +
+      'Everything you typed is still here: pick another day below and send it.';
+  }
+  const wrap = $('#days');
+  if (wrap) wrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
 function showSent(form, payload, calendarHeld) {
   const day = new Date(payload.requestedDay + 'T12:00:00');
   const pretty = day.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
@@ -311,7 +399,7 @@ function showSent(form, payload, calendarHeld) {
   const body = calendarHeld
     ? '<h3>Day requested</h3>' +
       '<p>' + escapeHtml(pretty) + ' for the ' + escapeHtml(payload.vehicle) + '.</p>' +
-      '<p class="hint">I text back to confirm the time and the price range. One car a day, so if that day is already claimed I will offer you the next open one.</p>'
+      '<p class="hint">That day is now off the board &mdash; nobody else can claim it. I text back to confirm the time and the price range.</p>'
     // Calendar refused the hold. Do not imply the day is spoken for.
     : '<h3>Got your details</h3>' +
       '<p>' + escapeHtml(payload.vehicle) + ', for ' + escapeHtml(pretty) + '.</p>' +

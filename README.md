@@ -56,8 +56,12 @@ nothing breaks.
 - $50 diagnostic, free of charge if the job is out of Thomas's realm.
 - Not offered: transmission rebuilds, body work, alignments, tire mounting.
 
-The day picker only ever generates Sun/Mon/Tue/Wed, and the n8n workflow
-re-checks the weekday server-side so a hand-crafted POST cannot book a Friday.
+The day picker asks the calendar-backed availability webhook for the next open
+Sun/Mon/Tue/Wed dates. Held dates are not rendered. If availability cannot be
+verified, the picker fails closed and shows no dates instead of guessing. The
+booking webhook checks the calendar again immediately before creating the hold,
+so a stale browser receives `409 day_taken` and redraws the remaining dates
+without losing anything the customer typed.
 
 ## Configuration
 
@@ -65,11 +69,9 @@ Everything re-pointable is at the top of `docs/assets/site.js`:
 
 ```js
 bookingEndpoint     n8n webhook that receives the booking request
+availabilityEndpoint read-only webhook returning calendar-verified open days
 elevenLabsAgentId   paste the agent id to switch on the real voice widget
 phone / phoneDisplay
-bookingWeekdays     [0,1,2,3] = Sun..Wed
-daysToOffer         how many open days the picker shows
-leadTimeDays        earliest bookable day, in days from today
 ```
 
 ## Local run
@@ -80,6 +82,15 @@ cd docs && python3 -m http.server 8791
 
 Must be served over HTTP, not opened as a `file://` path — the hero is an ES
 module and imports three.js.
+
+For safe booking QA without touching Google Calendar:
+
+```bash
+node tests/booking-availability-server.mjs
+```
+
+Open `http://127.0.0.1:4174/`. Add `?scenario=fail` to prove the calendar-failure
+state or `?scenario=none` to prove the fully-booked state.
 
 ## Deploy
 
