@@ -9,10 +9,11 @@ export const CONFIG = {
   // workflow. Leave as-is unless the workflow is moved.
   bookingEndpoint: 'https://tggai.app.n8n.cloud/webhook/gmm-booking',
 
-  // ElevenLabs Conversational AI agent. Paste the agent id here and the real
-  // voice widget takes over the bottom-right corner automatically. Until then
-  // the branded button falls back to phone + form.
-  elevenLabsAgentId: '',
+  // ElevenLabs Conversational AI agent — "Ken Melvoice", the same agent that
+  // answers the phone, so the site and the phone line give one answer. Public
+  // by design: the widget is client-side and the id is visible in the page.
+  // Clear it to fall the branded button back to phone + form.
+  elevenLabsAgentId: 'agent_0801kzj8sxw4fdt8y3te99av2d36',
 
   // Leave both blank until the live number is confirmed. Blank removes every
   // call-to-call on the page rather than publishing a stale number, and routes
