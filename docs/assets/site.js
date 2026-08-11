@@ -13,10 +13,6 @@ export const CONFIG = {
   // with anything already claimed on the calendar removed. Same workflow.
   availabilityEndpoint: 'https://tggai.app.n8n.cloud/webhook/gmm-availability',
   availabilityTimeoutMs: 7000,
-  // Keep an already-open tab synchronized with calendar changes. The booking
-  // POST still re-checks the day server-side; this closes the visual stale-tab
-  // gap before the customer reaches Submit.
-  availabilityRefreshMs: 30000,
 
   // ElevenLabs Conversational AI agent — "Ken Melvoice", the same agent that
   // answers the phone, so the site and the phone line give one answer. Public
@@ -164,17 +160,19 @@ async function refreshDayOptions({ quiet = false } = {}) {
   }
 }
 
-// Google Calendar is the single source of truth. Refresh quietly while the
-// customer is looking at the form, and immediately when they return to the tab.
-// A saved manual/voice event therefore disappears without requiring a reload.
+// Google Calendar is the single source of truth, but polling it on a timer
+// burns n8n executions for no reason — nobody is looking at stale chips while
+// a tab sits in the background. Refresh only when a person is actually there:
+// on load (see DOMContentLoaded), and again when they land back on the tab.
+// A saved manual/voice event still disappears without a manual reload, just
+// not on a fixed clock. The booking POST still re-checks the day server-side
+// as the final word before any hold is created.
 function startAvailabilityRefresh() {
-  const interval = Number(CONFIG.availabilityRefreshMs);
   const refresh = () => {
     if (document.hidden || bookingSubmitPending || !$('#bookForm') || !$('#days')) return;
     buildDayOptions({ quiet: true });
   };
 
-  if (Number.isFinite(interval) && interval > 0) setInterval(refresh, interval);
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) refresh();
   });
