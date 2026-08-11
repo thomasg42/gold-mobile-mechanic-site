@@ -134,6 +134,31 @@ h3 { font-size: clamp(1.5rem, 4vw, 1.9rem); }
 .brand-text b { color: var(--gold); font-weight: 700; }
 
 .nav-links { display: flex; gap: 1.5rem; margin-left: auto; }
+.nav-toggle {
+  display: none;
+  position: relative;
+  flex: none;
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  border: 1px solid rgba(245, 242, 234, 0.34);
+  background: transparent;
+  cursor: pointer;
+}
+.nav-toggle:hover { border-color: var(--gold); }
+.nav-toggle span {
+  position: absolute; left: 50%; top: 50%;
+  width: 20px; height: 2px;
+  background: var(--paper);
+  border-radius: 2px;
+  transform: translate(-50%, calc(-50% - 6px));
+  transition: transform .2s ease, opacity .2s ease, background .18s ease;
+}
+.nav-toggle span:nth-child(2) { transform: translate(-50%, -50%); }
+.nav-toggle span:nth-child(3) { transform: translate(-50%, calc(-50% + 6px)); }
+.nav-toggle:hover span { background: var(--gold); }
+.nav.is-open .nav-toggle span:nth-child(1) { transform: translate(-50%, -50%) rotate(45deg); }
+.nav.is-open .nav-toggle span:nth-child(2) { opacity: 0; }
+.nav.is-open .nav-toggle span:nth-child(3) { transform: translate(-50%, -50%) rotate(-45deg); }
 .nav-links a {
   color: var(--paper-2); font-size: 0.95rem; font-weight: 500;
   border-bottom: 1px solid transparent; padding-bottom: 2px;
@@ -492,7 +517,33 @@ input.is-invalid, textarea.is-invalid, select.is-invalid { border-color: var(--r
 
 /* ── responsive ───────────────────────────────────────────────────────── */
 @media (max-width: 1020px) {
-  .nav-links { display: none; }
+  .nav-toggle { display: block; }
+  .nav-links {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    margin: 0; gap: 0;
+    padding: 0.5rem 22px calc(env(safe-area-inset-bottom, 0px) + 1rem);
+    background: rgba(11, 12, 13, 0.97);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+    opacity: 0;
+    transform: translateY(-8px);
+    pointer-events: none;
+    transition: opacity .2s ease, transform .2s ease;
+  }
+  .nav.is-open .nav-links {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .nav-links a {
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--line-2);
+    font-size: 1.05rem;
+  }
+  .nav-links a:last-child { border-bottom: 0; }
   .book-grid, .diag-grid, .why-grid, .cards { grid-template-columns: 1fr; }
   .steps { grid-template-columns: 1fr; }
   .foot-grid { grid-template-columns: 1fr 1fr; }

@@ -37,6 +37,7 @@ const hasPhone = () => Boolean(String(CONFIG.phone || '').trim());
 document.addEventListener('DOMContentLoaded', () => {
   applyPhone();
   stickyNav();
+  mobileNav();
   fillYear();
   buildYearOptions();
   buildDayOptions();
@@ -85,6 +86,43 @@ function stickyNav() {
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+}
+
+// Hamburger dropdown for the primary nav on mobile widths (≤1020px, where
+// .nav-links no longer fits inline). Reuses the existing #navLinks markup as
+// the panel rather than duplicating it, toggled by an .is-open class on #nav.
+function mobileNav() {
+  const nav = $('#nav');
+  const toggle = $('#navToggle');
+  const links = $('#navLinks');
+  if (!nav || !toggle || !links) return;
+
+  const close = () => {
+    nav.classList.remove('is-open');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', 'Open menu');
+  };
+  const open = () => {
+    nav.classList.add('is-open');
+    toggle.setAttribute('aria-expanded', 'true');
+    toggle.setAttribute('aria-label', 'Close menu');
+  };
+
+  toggle.addEventListener('click', () => {
+    nav.classList.contains('is-open') ? close() : open();
+  });
+  links.addEventListener('click', (e) => {
+    if (e.target.closest('a')) close();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') close();
+  });
+  document.addEventListener('click', (e) => {
+    if (nav.classList.contains('is-open') && !nav.contains(e.target)) close();
+  });
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 1020) close();
+  });
 }
 
 function fillYear() {

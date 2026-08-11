@@ -23,6 +23,7 @@ const hasPhone = () => Boolean(String(CONFIG.phone || '').trim());
 document.addEventListener('DOMContentLoaded', () => {
   applyPhone();
   stickyNav();
+  mobileNav();
   fillYear();
   renderToolIcons();
   wireVoice();
@@ -46,6 +47,40 @@ function stickyNav() {
   const onScroll = () => nav.classList.toggle('is-stuck', window.scrollY > 40);
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+}
+
+function mobileNav() {
+  const nav = $('#nav');
+  const toggle = $('#navToggle');
+  const links = $('#navLinks');
+  if (!nav || !toggle || !links) return;
+
+  const close = () => {
+    nav.classList.remove('is-open');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', 'Open menu');
+  };
+  const open = () => {
+    nav.classList.add('is-open');
+    toggle.setAttribute('aria-expanded', 'true');
+    toggle.setAttribute('aria-label', 'Close menu');
+  };
+
+  toggle.addEventListener('click', () => {
+    nav.classList.contains('is-open') ? close() : open();
+  });
+  links.addEventListener('click', (e) => {
+    if (e.target.closest('a')) close();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') close();
+  });
+  document.addEventListener('click', (e) => {
+    if (nav.classList.contains('is-open') && !nav.contains(e.target)) close();
+  });
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 1020) close();
+  });
 }
 
 function fillYear() {
