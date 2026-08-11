@@ -2,8 +2,6 @@
    Everything configurable lives in CONFIG so the site can be re-pointed
    without reading the rest of this file. */
 
-import { initHero3D } from './hero3d.js';
-
 export const CONFIG = {
   // n8n webhook that receives a booking request. See wiki build page for the
   // workflow. Leave as-is unless the workflow is moved.
@@ -584,40 +582,73 @@ function pulseWidget() {
 
 /* ── hero ─────────────────────────────────────────────────────────────── */
 function bootHero() {
-  const canvas = $('#heroCanvas');
+  const video = $('#heroVideo');
   const section = $('.hero-scroll');
-  const layer = $('#heroHotspots');
   const fill = $('#stateFill');
   const before = $('#stateBefore');
   const after = $('#stateAfter');
 
-  if (!canvas || !section || !supportsWebGL()) {
-    document.body.classList.add('no-webgl');
+  if (!video || !section) {
+    document.body.classList.add('hero-video-failed');
     return;
   }
 
-  const scene = initHero3D({
-    canvas,
-    section,
-    layer,
-    onProgress: (p) => {
-      if (fill) fill.style.width = (p * 100).toFixed(1) + '%';
-      if (before) before.style.opacity = String(1 - p * 0.78);
-      if (after) after.style.opacity = String(0.28 + p * 0.72);
-    },
-  });
+  let targetProgress = 0;
+  let displayedProgress = 0;
+  let frame = 0;
+  let ready = false;
+  let initialized = false;
 
-  if (!scene) document.body.classList.add('no-webgl');
-}
+  const paintProgress = (progress) => {
+    if (fill) fill.style.width = (progress * 100).toFixed(1) + '%';
+    if (before) before.style.opacity = String(1 - progress * 0.78);
+    if (after) after.style.opacity = String(0.28 + progress * 0.72);
+  };
 
-function supportsWebGL() {
-  try {
-    const canvas = document.createElement('canvas');
-    return Boolean(
-      window.WebGLRenderingContext &&
-      (canvas.getContext('webgl2') || canvas.getContext('webgl'))
-    );
-  } catch (err) {
-    return false;
-  }
+  const seek = () => {
+    frame = 0;
+    if (!ready || !Number.isFinite(video.duration) || video.duration <= 0) return;
+
+    displayedProgress += (targetProgress - displayedProgress) * 0.16;
+    if (Math.abs(targetProgress - displayedProgress) < 0.0005) displayedProgress = targetProgress;
+
+    const safeEnd = Math.max(0, video.duration - 0.04);
+    const wantedTime = Math.min(safeEnd, displayedProgress * safeEnd);
+    if (Math.abs(video.currentTime - wantedTime) > 0.012) video.currentTime = wantedTime;
+    paintProgress(displayedProgress);
+
+    if (displayedProgress !== targetProgress) frame = requestAnimationFrame(seek);
+  };
+
+  const readScroll = () => {
+    const rect = section.getBoundingClientRect();
+    const scrollable = section.offsetHeight - window.innerHeight;
+    targetProgress = scrollable > 0
+      ? Math.min(1, Math.max(0, -rect.top / scrollable))
+      : 0;
+    if (!frame) frame = requestAnimationFrame(seek);
+  };
+
+  const markReady = () => {
+    if (initialized) return;
+    initialized = true;
+
+    const finish = () => {
+      video.pause();
+      ready = true;
+      readScroll();
+    };
+    const playback = video.play();
+    if (playback && typeof playback.then === 'function') playback.then(finish).catch(finish);
+    else finish();
+  };
+
+  video.addEventListener('loadeddata', markReady, { once: true });
+  video.addEventListener('error', () => document.body.classList.add('hero-video-failed'), { once: true });
+  window.addEventListener('scroll', readScroll, { passive: true });
+  window.addEventListener('resize', readScroll, { passive: true });
+  paintProgress(0);
+  readScroll();
+
+  if (video.readyState >= 2) markReady();
 }

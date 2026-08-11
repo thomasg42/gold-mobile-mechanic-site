@@ -22,7 +22,8 @@ docs/
   assets/styles.css     one stylesheet, one layout for phone and desktop, both pages
   assets/site.js        CONFIG, booking form, day picker, voice widget wiring (index.html)
   assets/diagnose.js    CONFIG, tool icons, voice widget wiring (diagnose.html)
-  assets/hero3d.js      the scroll-driven 3D before/after hero
+  assets/hero3d.js      retained source for the superseded WebGL hero
+  assets/hero/          the current scroll-scrub MP4
   assets/favicon.svg
   vendor/three/         three.js r185, vendored so the hero has no CDN dependency
   robots.txt sitemap.xml .nojekyll
@@ -52,23 +53,13 @@ booking page before its agent existed.
 
 ## The hero
 
-The "3D" in the Premium 3D Website tier is normally the scroll-driven hero video
-pattern (`wiki/builds/scroll-driven-hero-video.md`). There is no hero footage for
-this business and no photos of Thomas's work in the repo, so the same scroll
-mechanic drives a live WebGL scene instead of a video file.
-
-Scroll progress sweeps a diagnostic scan plane from the nose of a vehicle to the
-tail. Two copies of the car are rendered — a grey, faulted BEFORE and a gold,
-repaired AFTER — split by real clipping planes at the scan position, so it is one
-continuous 3D wipe rather than a crossfade. One callout at a time follows the
-scan: Misfire → Plugs + coils, Grinding → Brakes, Leaking → Oil + fluids,
-Clunking → Suspension.
-
-Same scene on desktop and phone. The camera distance is solved from the viewport
-aspect each resize, so a tall phone pulls back and frames the car instead of
-slicing the bumpers off. If WebGL is unavailable the page adds `body.no-webgl`,
-the tall scroll container collapses, and the hero becomes a normal static block —
-nothing breaks.
+The hero uses `docs/assets/hero/gmm-hero-orbit.mp4`, a five-second portrait
+before/after vehicle orbit. The video is pinned full-screen and its playhead is
+scrubbed by progress through the existing tall hero section; it remains muted
+and paused between scroll updates. The headline, supporting copy, CTAs,
+diagnostic note, and before/after progress indicator stay layered above it on
+desktop and phone. If the MP4 cannot load, the branded dark background remains
+visible and the hero collapses to a normal non-scrubbing block.
 
 ## Business rules encoded in the page
 

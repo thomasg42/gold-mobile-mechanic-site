@@ -178,27 +178,13 @@ h3 { font-size: clamp(1.5rem, 4vw, 1.9rem); }
     radial-gradient(circle at 20% 0%, rgba(120, 150, 210, 0.07), transparent 50%),
     var(--ink);
 }
-#heroCanvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-
-.hero-hotspots { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
-.hot {
-  position: absolute; top: 0; left: 0;
-  display: flex; align-items: center; gap: 0.45rem;
-  padding: 0.28rem 0.62rem;
-  border: 1px solid var(--rust);
-  border-radius: 999px;
-  background: rgba(11, 12, 13, 0.72);
-  backdrop-filter: blur(4px);
-  font-family: var(--display);
-  font-size: 0.8rem; letter-spacing: 0.13em; text-transform: uppercase;
-  white-space: nowrap;
-  transition: border-color .3s ease, opacity .25s ease;
+.hero-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  background: var(--ink);
 }
-.hot-state { color: var(--rust); font-weight: 700; }
-.hot-name { color: var(--paper-2); }
-.hot.is-fixed { border-color: var(--gold); }
-.hot.is-fixed .hot-state { color: var(--gold); }
-.hot.is-fixed .hot-name { color: var(--paper); }
 
 .hero-vignette {
   position: absolute; inset: 0; z-index: 4; pointer-events: none;
@@ -261,13 +247,12 @@ h3 { font-size: clamp(1.5rem, 4vw, 1.9rem); }
 @keyframes cue { 0%,100% { opacity: .25; transform: translateY(-5px); } 50% { opacity: 1; transform: translateY(5px); } }
 .hero-sticky.is-scrolled .scroll-cue { opacity: 0; }
 
-/* WebGL unavailable — the hero still reads, it just stops moving. */
-body.no-webgl .hero-scroll { height: auto; }
-body.no-webgl .hero-sticky { position: relative; min-height: 92vh; }
-body.no-webgl .hero-state,
-body.no-webgl .scroll-cue,
-body.no-webgl .hero-hotspots { display: none; }
-body.no-webgl .hero-copy { position: relative; padding-top: 34vh; }
+/* Video unavailable — the poster and hero copy still work without a long scrub. */
+body.hero-video-failed .hero-scroll { height: auto; }
+body.hero-video-failed .hero-sticky { position: relative; min-height: 92vh; }
+body.hero-video-failed .hero-state,
+body.hero-video-failed .scroll-cue { display: none; }
+body.hero-video-failed .hero-copy { position: relative; padding-top: 34vh; }
 
 /* ── trust strip ──────────────────────────────────────────────────────── */
 .strip { border-block: 1px solid var(--line); background: var(--ink-2); }
@@ -558,7 +543,6 @@ input.is-invalid, textarea.is-invalid, select.is-invalid { border-color: var(--r
   .hero-scroll { height: 380vh; }
   .hero-copy { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 96px); }
   .hero-actions .btn { flex: 1 1 auto; }
-  .hot { font-size: 0.68rem; padding: 0.2rem 0.5rem; gap: 0.3rem; }
   .scroll-cue span { display: none; }
   .foot-grid { grid-template-columns: 1fr; }
   .voice { right: 12px; bottom: 12px; }
