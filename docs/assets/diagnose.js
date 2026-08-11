@@ -7,10 +7,7 @@ export const CONFIG = {
   // ElevenLabs Conversational AI agent — Ken in DIAGNOSIS MODE. This is a
   // separate agent id from the booking-line Ken on the main page; see
   // DIAGNOSIS_AGENT.md for why they're kept apart and how to set this one up.
-  // Blank on purpose until that agent exists — the page degrades to the
-  // symptom/tool reference plus a "voice line not connected yet" message,
-  // exactly like the booking page does with a blank agent id.
-  elevenLabsAgentId: '',
+  elevenLabsAgentId: 'agent_8501kzrqdwcafactwx2wmjg2z7fn',
 
   // Same phone gate as the main site: blank means every call-to-call is
   // removed rather than publishing a stale number.
