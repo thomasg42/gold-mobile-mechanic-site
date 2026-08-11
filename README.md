@@ -7,23 +7,48 @@ receipts, invoices) — this is the customer-facing site that feeds it.
 Built on `wiki/builds/local-business-website-seo-blueprint.md`.
 
 - Live: https://thomasg42.github.io/gold-mobile-mechanic-site/
-- Source of truth for the page: `docs/` (single page, no build step)
+- Source of truth for the page: `docs/` (multi-page static site, no build step)
 - Booking backend: n8n workflow `Gold Mobile Mechanic — Website Booking Request`
   (`iZQeMd1Hiq3mV4Qf`) on `tggai.app.n8n.cloud`
-- Voice agent: see `ELEVENLABS_AGENT.md`
+- Voice agent (booking): see `ELEVENLABS_AGENT.md`
+- Voice agent (free diagnosis): see `DIAGNOSIS_AGENT.md`
 
 ## What is in here
 
 ```
 docs/
-  index.html            the whole page
-  assets/styles.css     one stylesheet, one layout for phone and desktop
-  assets/site.js        CONFIG, booking form, day picker, voice widget wiring
+  index.html            the main page
+  diagnose.html         free consumer diagnosis assistant page ("ask Ken")
+  assets/styles.css     one stylesheet, one layout for phone and desktop, both pages
+  assets/site.js        CONFIG, booking form, day picker, voice widget wiring (index.html)
+  assets/diagnose.js    CONFIG, tool icons, voice widget wiring (diagnose.html)
   assets/hero3d.js      the scroll-driven 3D before/after hero
   assets/favicon.svg
   vendor/three/         three.js r185, vendored so the hero has no CDN dependency
   robots.txt sitemap.xml .nojekyll
 ```
+
+## The free diagnosis page (`diagnose.html`)
+
+A separate, deliberately simpler page: "talk to Ken and find out what's
+probably wrong, with hardly any special tools." It is NOT the technician
+manual repackaged — the content (`wiki/builds/gmm-consumer-diagnosis-content.md`
+in FGA-Brain) is a from-scratch, safety-bounded rewrite covering only what a
+layperson can check by look, sound, or a handful of $5-$20 tools (flashlight,
+tire pressure gauge, tread depth gauge or a penny, jumper cables, a rag +
+white cardboard, and the car's own dipstick). Anything beyond that — brake
+hydraulics, transmission, hybrid/EV high-voltage, exhaust restriction, HVAC,
+electrical faults beyond battery terminals — always routes to "book the
+diagnostic," never a guessed answer.
+
+Voice is Ken again (same character, same voice, for brand consistency) but a
+**separate ElevenLabs agent** from the booking-line Ken, so nothing about this
+page can destabilize the already-live, already-tuned booking agent. See
+`DIAGNOSIS_AGENT.md` for the full system prompt, safety rules, and the
+ready-to-paste Claude Co-Work prompt to actually create that agent — it isn't
+configured yet, so the page currently shows the visual symptom/tool reference
+plus a graceful "voice line not connected yet" fallback, same pattern as the
+booking page before its agent existed.
 
 ## The hero
 

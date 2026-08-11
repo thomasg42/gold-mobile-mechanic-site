@@ -797,3 +797,123 @@ textarea:focus { background-color: #ffffff; }
   .book-form,
   .card { backdrop-filter: blur(8px) saturate(1.04); }
 }
+
+/* ── diagnose.html — hero (dark, matches main hero palette, no 3D) ──────── */
+.diaghero {
+  background:
+    radial-gradient(circle at 50% 120%, rgba(225, 189, 91, 0.13), transparent 58%),
+    radial-gradient(circle at 20% 0%, rgba(120, 150, 210, 0.07), transparent 50%),
+    var(--ink);
+  padding-top: clamp(7rem, 14vw, 9rem);
+  border-bottom: 1px solid var(--line);
+}
+.diaghero-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+.diaghero-copy h1 {
+  font-size: clamp(2.6rem, 7vw, 4.6rem);
+  line-height: 0.98;
+  margin: 0.3rem 0 1rem;
+}
+.diaghero-copy h1 em { font-style: normal; color: var(--gold); }
+.diaghero-disclaimer {
+  background: var(--ink-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: clamp(1.2rem, 3vw, 1.7rem);
+  align-self: start;
+}
+.diaghero-disclaimer p { color: var(--paper-2); font-size: 0.96rem; margin-top: 0.7rem; }
+.diaghero-disclaimer p:first-of-type { margin-top: 0; }
+.diaghero-cta b { color: var(--gold-hi); }
+
+/* ── diagnose.html — symptom accordion ───────────────────────────────────── */
+.symptoms { background: var(--ink); }
+.symptom-list { margin-top: 1.8rem; border-top: 1px solid var(--line-2); }
+.symptom { border-bottom: 1px solid var(--line-2); }
+.symptom summary {
+  cursor: pointer; list-style: none; padding: 1.1rem 2.4rem 1.1rem 0; position: relative;
+  display: flex; align-items: center; gap: 0.7rem;
+  font-family: var(--display); font-size: clamp(1.15rem, 3vw, 1.4rem);
+  letter-spacing: 0.04em; text-transform: uppercase;
+}
+.symptom summary::-webkit-details-marker { display: none; }
+.symptom summary::after {
+  content: '+'; position: absolute; right: 0.2rem; top: 50%; transform: translateY(-50%);
+  color: var(--gold); font-size: 1.6rem; line-height: 1;
+}
+.symptom[open] summary::after { content: '\2212'; }
+.symptom-icon { color: var(--gold); font-size: 0.6rem; flex: none; }
+.symptom-body { padding: 0 0 1.4rem; display: grid; gap: 0.9rem; }
+
+.sitem {
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  border-left: 3px solid var(--line-2);
+  background: rgba(245, 242, 234, 0.03);
+}
+.sitem b { display: block; font-family: var(--display); letter-spacing: 0.02em; font-size: 1.02rem; margin-bottom: 0.3rem; text-transform: none; }
+.sitem p, .sitem > .stool span { color: var(--paper-2); font-size: 0.96rem; }
+.sitem p b, .sitem .stool b { color: inherit; display: inline; font-size: inherit; }
+
+.sitem-urgent { border-left-color: var(--rust); background: rgba(209, 85, 47, 0.07); }
+.sitem-urgent b { color: var(--rust); }
+.sitem-soon { border-left-color: var(--gold-deep); background: rgba(168, 132, 47, 0.06); }
+.sitem-soon b { color: var(--gold-hi); }
+.sitem-safe { border-left-color: var(--line); }
+.sitem-safe b { color: var(--paper); }
+
+.stool { display: flex; align-items: flex-start; gap: 0.65rem; margin-top: 0.4rem; }
+.tool-icon { flex: none; width: 22px; height: 22px; color: var(--gold); }
+.tool-icon svg { width: 100%; height: 100%; }
+
+.symptom-key { display: flex; flex-wrap: wrap; gap: 1.4rem; margin-top: 1.6rem; font-size: 0.88rem; color: var(--paper-3); }
+.symptom-key span { display: flex; align-items: center; gap: 0.5rem; }
+.key-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.key-urgent { background: var(--rust); }
+.key-soon { background: var(--gold-deep); }
+.key-safe { background: var(--paper-3); }
+
+/* ── diagnose.html — tools grid ──────────────────────────────────────────── */
+.tools { background: var(--ink-2); border-block: 1px solid var(--line); }
+.tool-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; margin-top: 2rem; }
+.tool-card {
+  background: var(--ink-3);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  padding: 1.4rem 1.1rem;
+  text-align: center;
+  display: grid; justify-items: center; gap: 0.5rem;
+}
+.tool-icon-lg { width: 40px; height: 40px; color: var(--gold); margin-bottom: 0.2rem; }
+.tool-card b { font-family: var(--display); font-size: 1.05rem; letter-spacing: 0.03em; line-height: 1.15; }
+.tool-or { font-size: 0.78rem; color: var(--paper-3); text-transform: none; letter-spacing: 0; font-family: var(--body); }
+.tool-card span:last-child { color: var(--paper-3); font-size: 0.88rem; }
+
+/* ── diagnose.html — needs a pro ─────────────────────────────────────────── */
+.needspro { background: var(--ink); }
+.needspro-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+.needspro-list { margin-top: 0; }
+
+@media (max-width: 1020px) {
+  .diaghero-grid, .needspro-grid { grid-template-columns: 1fr; }
+  .tool-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .tool-grid { grid-template-columns: 1fr 1fr; }
+}
+
+:is(.symptoms, .tools, .needspro) {
+  --ink: #fffdf9;
+  --ink-2: rgba(255, 255, 255, 0.84);
+  --ink-3: rgba(247, 246, 242, 0.92);
+  --line: rgba(168, 132, 47, 0.28);
+  --line-2: rgba(23, 33, 43, 0.14);
+  --paper: #17212b;
+  --paper-2: rgba(23, 33, 43, 0.76);
+  --paper-3: rgba(23, 33, 43, 0.58);
+  color: var(--paper);
+}
+:is(.symptoms, .tools, .needspro) h2 { text-shadow: 0 2px 18px rgba(255, 255, 255, 0.9); }
+.sitem { background: rgba(255, 255, 255, 0.55); }
+.sitem-urgent { background: rgba(209, 85, 47, 0.09); }
+.sitem-soon { background: rgba(168, 132, 47, 0.08); }
+.tool-card { background: rgba(255, 255, 255, 0.7); box-shadow: 0 14px 40px rgba(36, 47, 57, 0.08); }
