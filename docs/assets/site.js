@@ -11,6 +11,7 @@ export const CONFIG = {
   // with anything already claimed on the calendar removed. Same workflow.
   availabilityEndpoint: 'https://tggai.app.n8n.cloud/webhook/gmm-availability',
   availabilityTimeoutMs: 7000,
+  availabilityWeeks: 3,
 
   // ElevenLabs Conversational AI agent — "Ken Melvoice", the same agent that
   // answers the phone, so the site and the phone line give one answer. Public
@@ -227,9 +228,11 @@ async function fetchOpenDays() {
     : null;
 
   try {
+    const url = new URL(endpoint, window.location.href);
+    url.searchParams.set('weeks', String(CONFIG.availabilityWeeks));
     const options = { method: 'GET', cache: 'no-store' };
     if (controller) options.signal = controller.signal;
-    const response = await fetch(endpoint, options);
+    const response = await fetch(url.toString(), options);
     if (!response.ok) return null;
     const data = await readJson(response);
     if (!data || !Array.isArray(data.open)) return null;
@@ -264,20 +267,89 @@ function renderDays(isoDays, selectedDay = '') {
     return;
   }
 
+  const groups = groupDaysByWeek(isoDays);
   const frag = document.createDocumentFragment();
-  for (const iso of isoDays) {
-    // Noon, so a timezone offset can never roll the label onto the wrong date.
-    const date = new Date(iso + 'T12:00:00');
-    const label = document.createElement('label');
-    label.className = 'day';
-    label.innerHTML =
-      '<input type="radio" name="day" value="' + iso + '"' + (iso === selectedDay ? ' checked' : '') + '>' +
-      '<span><span class="d-dow">' + dows[date.getDay()] + '</span>' +
-      '<span class="d-date">' + (date.getMonth() + 1) + '/' + date.getDate() + '</span></span>';
-    frag.appendChild(label);
+  groups.forEach((group, groupIndex) => {
+    const section = document.createElement('section');
+    section.className = 'day-week';
+    const headingId = 'booking-week-' + groupIndex;
+    section.setAttribute('aria-labelledby', headingId);
+
+    const heading = document.createElement('h3');
+    heading.className = 'day-week-heading';
+    heading.id = headingId;
+    heading.textContent = weekLabel(group.start);
+    section.appendChild(heading);
+
+    const dayGrid = document.createElement('div');
+    dayGrid.className = 'day-week-grid';
+    for (const iso of group.days) {
+      // Noon, so a timezone offset can never roll the label onto the wrong date.
+      const date = new Date(iso + 'T12:00:00');
+      const label = document.createElement('label');
+      label.className = 'day';
+      label.innerHTML =
+        '<input type="radio" name="day" value="' + iso + '"' + (iso === selectedDay ? ' checked' : '') + '>' +
+        '<span><span class="d-dow">' + dows[date.getDay()] + '</span>' +
+        '<span class="d-date">' + (date.getMonth() + 1) + '/' + date.getDate() + '</span></span>';
+      dayGrid.appendChild(label);
+    }
+    section.appendChild(dayGrid);
+    frag.appendChild(section);
+  });
+
+  if (!groups.length) {
+    wrap.innerHTML = '<div class="days-note">No Sunday-through-Wednesday dates are open in the upcoming schedule. ' +
+      '<button type="button" class="days-retry" data-retry-days>Check again</button></div>';
+    setDayPickerReady(false);
+    return;
   }
   wrap.appendChild(frag);
   setDayPickerReady(true);
+}
+
+// Keep the appointment board easy to scan on a phone: dates from the live
+// calendar stay grouped into Sunday-start weeks, so if this week is gone the
+// next available week becomes the first thing the customer sees.
+function groupDaysByWeek(isoDays) {
+  const groups = [];
+  const byStart = new Map();
+  const unique = Array.from(new Set(isoDays)).sort();
+
+  for (const iso of unique) {
+    const date = new Date(iso + 'T12:00:00');
+    if (Number.isNaN(date.getTime()) || ![0, 1, 2, 3].includes(date.getDay())) continue;
+    const start = startOfWeek(date);
+    const key = localIso(start);
+    if (!byStart.has(key)) {
+      const group = { start, days: [] };
+      byStart.set(key, group);
+      groups.push(group);
+    }
+    byStart.get(key).days.push(iso);
+  }
+  return groups;
+}
+
+function startOfWeek(value) {
+  const date = new Date(value);
+  date.setHours(12, 0, 0, 0);
+  date.setDate(date.getDate() - date.getDay());
+  return date;
+}
+
+function localIso(date) {
+  return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-');
+}
+
+function weekLabel(start) {
+  const thisWeek = startOfWeek(new Date());
+  const nextWeek = new Date(thisWeek);
+  nextWeek.setDate(nextWeek.getDate() + 7);
+  const key = localIso(start);
+  if (key === localIso(thisWeek)) return 'This week';
+  if (key === localIso(nextWeek)) return 'Next week';
+  return 'Week of ' + start.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 }
 
 function setDayPickerReady(ready) {

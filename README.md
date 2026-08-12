@@ -69,17 +69,27 @@ collapses to a normal non-scrubbing block.
 - Booking days: Sunday, Monday, Tuesday, Wednesday only. One vehicle per day.
 - One-day jobs, done at the customer's location: brakes, oil, suspension,
   tune-ups (plugs and coils), transmission fluid, oil pan and transmission pan.
-- Two- to three-day jobs, dropped off: timing chains, head gaskets, anything internal to
-  the engine. The drop-off address is never published — it goes out in the
-  confirmation text.
+- Two- to three-day jobs, dropped off: timing work, head gaskets and deeper
+  teardown. Head-gasket work carries a clear recommendation to have the cylinder
+  head checked and resurfaced by a machine shop so warped mating surfaces are not
+  sealed together. A customer can decline after the risk is discussed.
+- Repairs return the vehicle to factory specification. Modification, piston,
+  piston-ring, full-engine-rebuild and engine-resurfacing jobs are not taken as
+  full-service work, but Thomas can work alongside an owner at his standard
+  hourly rate. Head gaskets, valve covers and seals can be done for the customer
+  or as hourly hands-on help.
+- The drop-off address is never published — it goes out in the confirmation text.
 - The form asks only for location preference: mobile service at the customer's
   place (higher cost), drop-off (lower cost), or not sure yet. The diagnostic,
   not the customer, determines whether the repair is a one-day or 2–3-day job.
 - $50 diagnostic, free of charge if the job is out of Thomas's realm.
-- Not offered: transmission rebuilds, body work, alignments, tire mounting.
 
-The day picker asks the calendar-backed availability webhook for the next open
-Sun/Mon/Tue/Wed dates. Held dates are not rendered. If availability cannot be
+The day picker asks the calendar-backed availability webhook for the open
+Sun/Mon/Tue/Wed dates across a three-week horizon (the remaining current week
+plus the next two full booking weeks) and groups the returned dates into
+Sunday-start weeks, so the next available week appears first when the current
+week is full. Held dates
+are not rendered. If availability cannot be
 verified, the picker fails closed and shows no dates instead of guessing. The
 booking webhook checks the calendar again immediately before creating the hold,
 so a stale browser receives `409 day_taken` and redraws the remaining dates
