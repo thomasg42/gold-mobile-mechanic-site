@@ -634,8 +634,14 @@ input.is-invalid, textarea.is-invalid, select.is-invalid { border-color: var(--r
   --line-2: rgba(23, 33, 43, 0.14);
   --paper: #17212b;
   --paper-2: rgba(23, 33, 43, 0.76);
-  --paper-3: rgba(23, 33, 43, 0.58);
+  --paper-3: rgba(23, 33, 43, 0.66);
   color: var(--paper);
+}
+/* --gold (#e1bd7b) is tuned for the dark hero and fails WCAG AA (1.76:1) on
+   this light background — kickers here need a darkened gold that still
+   reads as the brand accent. */
+:is(.strip, .book, .fix, .diag, .how, .why, .faq, .closer, .foot) .kicker {
+  color: #6b5320;
 }
 
 .strip {
@@ -1000,9 +1006,10 @@ textarea:focus { background-color: #ffffff; }
   --line-2: rgba(23, 33, 43, 0.14);
   --paper: #17212b;
   --paper-2: rgba(23, 33, 43, 0.76);
-  --paper-3: rgba(23, 33, 43, 0.58);
+  --paper-3: rgba(23, 33, 43, 0.66);
   color: var(--paper);
 }
+:is(.symptoms, .tools, .needspro) .kicker { color: #6b5320; }
 :is(.symptoms, .tools, .needspro) h2 { text-shadow: 0 2px 18px rgba(255, 255, 255, 0.9); }
 .sitem { background: rgba(255, 255, 255, 0.55); }
 .sitem-urgent { background: rgba(209, 85, 47, 0.09); }
