@@ -3,13 +3,13 @@
    without reading the rest of this file. */
 
 export const CONFIG = {
-  // n8n webhook that receives a booking request. See wiki build page for the
-  // workflow. Leave as-is unless the workflow is moved.
-  bookingEndpoint: 'https://tggai.app.n8n.cloud/webhook/gmm-booking',
+  // Public booking routes on the existing Gold Mobile Mechanic cloud ledger.
+  // The same ledger feeds the owner phone app, so a website request appears as
+  // a draft job there without depending on n8n execution quota.
+  bookingEndpoint: 'https://gold-mobile-mechanic-sync.forevergoldai.workers.dev/api/public/bookings',
 
-  // Read-only companion to the booking webhook: returns the days still open,
-  // with anything already claimed on the calendar removed. Same workflow.
-  availabilityEndpoint: 'https://tggai.app.n8n.cloud/webhook/gmm-availability',
+  // Read-only companion route: only unclaimed booking days are returned.
+  availabilityEndpoint: 'https://gold-mobile-mechanic-sync.forevergoldai.workers.dev/api/public/availability',
   availabilityTimeoutMs: 7000,
   availabilityWeeks: 3,
 
@@ -197,13 +197,10 @@ async function refreshDayOptions({ quiet = false } = {}) {
   }
 }
 
-// Google Calendar is the single source of truth, but polling it on a timer
-// burns n8n executions for no reason — nobody is looking at stale chips while
-// a tab sits in the background. Refresh only when a person is actually there:
-// on load (see DOMContentLoaded), and again when they land back on the tab.
-// A saved manual/voice event still disappears without a manual reload, just
-// not on a fixed clock. The booking POST still re-checks the day server-side
-// as the final word before any hold is created.
+// The cloud booking board is the source of truth. Refresh only when a person
+// is actually there: on load (see DOMContentLoaded), and again when they land
+// back on the tab. The booking POST still re-checks the day server-side as the
+// final word before any hold is created.
 function startAvailabilityRefresh() {
   const refresh = () => {
     if (document.hidden || bookingSubmitPending || !$('#bookForm') || !$('#days')) return;
@@ -216,7 +213,7 @@ function startAvailabilityRefresh() {
   window.addEventListener('focus', refresh);
 }
 
-// Days the calendar says are still free. Null on any failure — never a partial
+// Days the booking board says are still free. Null on any failure — never a partial
 // or invented list, because a wrong "open" here books two cars on one day.
 async function fetchOpenDays() {
   const endpoint = String(CONFIG.availabilityEndpoint || '').trim();
@@ -251,17 +248,17 @@ function renderDays(isoDays, selectedDay = '') {
   const dows = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   wrap.innerHTML = '';
 
-  // Fail closed. If the calendar cannot be checked, do not invent dates that
+  // Fail closed. If the booking board cannot be checked, do not invent dates that
   // may already belong to somebody else.
   if (!Array.isArray(isoDays)) {
-    wrap.innerHTML = '<div class="days-note">I cannot verify the calendar right now, so no days are being shown. ' +
+    wrap.innerHTML = '<div class="days-note">I cannot verify the schedule right now, so no days are being shown. ' +
       '<button type="button" class="days-retry" data-retry-days>Check again</button></div>';
     setDayPickerReady(false);
     return;
   }
 
   if (!isoDays.length) {
-    wrap.innerHTML = '<div class="days-note">Every day on the board is claimed right now. ' +
+    wrap.innerHTML = '<div class="days-note">Every appointment day on the board is claimed right now. ' +
       '<button type="button" class="days-retry" data-retry-days>Check again</button></div>';
     setDayPickerReady(false);
     return;
@@ -309,7 +306,7 @@ function renderDays(isoDays, selectedDay = '') {
 }
 
 // Keep the appointment board easy to scan on a phone: dates from the live
-// calendar stay grouped into Sunday-start weeks, so if this week is gone the
+// booking board stay grouped into Sunday-start weeks, so if this week is gone the
 // next available week becomes the first thing the customer sees.
 function groupDaysByWeek(isoDays) {
   const groups = [];
@@ -420,10 +417,9 @@ function wireForm() {
       }
 
       if (!response.ok) throw new Error('HTTP ' + response.status);
-      if (result && result.ok === false) throw new Error('rejected');
-      // The request landed, but the calendar may not have taken the hold. Say so
-      // rather than promising a day that was never actually held.
-      const held = !result || result.calendarHeld !== false;
+      if (!result || result.ok !== true) throw new Error('rejected');
+      const held = result.dayHeld === true || result.calendarHeld === true;
+      if (!held) throw new Error('day_not_held');
       bookingSubmitPending = false;
       showSent(form, payload, held);
     } catch (err) {
@@ -444,9 +440,7 @@ function wireForm() {
   });
 }
 
-// A 2xx with an empty or non-JSON body is a success, not a failure — only an
-// explicit {ok:false} counts as a rejection. Written defensively so a body that
-// cannot be parsed never turns a real booking into an error message.
+// A booking is successful only when the backend returns explicit JSON proof.
 async function readJson(response) {
   try {
     if (typeof response.json !== 'function') return null;
@@ -551,22 +545,23 @@ async function showDayTaken(form, payload, open) {
   if (wrap) wrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-function showSent(form, payload, calendarHeld) {
+function showSent(form, payload, dayHeld) {
   const day = new Date(payload.requestedDay + 'T12:00:00');
   const pretty = day.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
 
-  const body = calendarHeld
+  const body = dayHeld
     ? '<h3>Day requested</h3>' +
       '<p>' + escapeHtml(pretty) + ' for the ' + escapeHtml(payload.vehicle) + '.</p>' +
       '<p class="hint">That day is now off the board &mdash; nobody else can claim it. I text back to confirm the time and the price range.</p>'
-    // Calendar refused the hold. Do not imply the day is spoken for.
+    // Defensive fallback. The submit path currently refuses to call this unless
+    // the booking board proves the day is held.
     : '<h3>Got your details</h3>' +
       '<p>' + escapeHtml(payload.vehicle) + ', for ' + escapeHtml(pretty) + '.</p>' +
-      '<p class="hint">My calendar did not take the hold, so I am scheduling this one by hand. I will reach out personally to lock the day in. Nothing is lost &mdash; I have everything you sent.</p>';
+      '<p class="hint">The schedule did not take the hold, so I am scheduling this one by hand. I will reach out personally to lock the day in. Nothing is lost &mdash; I have everything you sent.</p>';
 
   form.innerHTML =
     '<div class="sent">' +
-    '<div class="sent-mark" aria-hidden="true">' + (calendarHeld ? '✓' : '!') + '</div>' +
+    '<div class="sent-mark" aria-hidden="true">' + (dayHeld ? '✓' : '!') + '</div>' +
     body +
     (hasPhone()
       ? '<p class="hint">Need it sooner? Call <a href="tel:' + CONFIG.phone + '">' + CONFIG.phoneDisplay + '</a>.</p>'

@@ -84,30 +84,26 @@ collapses to a normal non-scrubbing block.
   not the customer, determines whether the repair is a one-day or 2–3-day job.
 - $50 diagnostic, free of charge if the job is out of Thomas's realm.
 
-The day picker asks the calendar-backed availability webhook for the open
+The day picker asks the Gold Mobile Mechanic cloud ledger for the open
 Sun/Mon/Tue/Wed dates across a three-week horizon (the remaining current week
 plus the next two full booking weeks) and groups the returned dates into
 Sunday-start weeks, so the next available week appears first when the current
-week is full. Held dates
-are not rendered. If availability cannot be
+week is full. Claimed dates are not rendered. If availability cannot be
 verified, the picker fails closed and shows no dates instead of guessing. The
-booking webhook checks the calendar again immediately before creating the hold,
+booking endpoint atomically claims the date immediately before saving the request,
 so a stale browser receives `409 day_taken` and redraws the remaining dates
 without losing anything the customer typed. An already-open page also refreshes
-when the tab regains focus (no background timer — polling on a fixed interval
-wastes n8n executions while nobody's looking). If an active Google Calendar
-event title contains `Gold Mobile Mechanic` (for example `Gold Mobile Mechanic
-Work` or `Gold Mobile Mechanic Diagnosis`), every covered date is treated as a
-whole-day block even when the event itself is only one hour long. Existing `GMM
-HOLD` and `GMM BLOCK` titles remain supported.
+when the tab regains focus, with no background timer. A successful request is
+also written into the owner phone app as a draft job, including the customer's
+cell, vehicle, problem, location preference, and requested day.
 
 ## Configuration
 
 Everything re-pointable is at the top of `docs/assets/site.js`:
 
 ```js
-bookingEndpoint     n8n webhook that receives the booking request
-availabilityEndpoint read-only webhook returning calendar-verified open days
+bookingEndpoint     Worker route that atomically claims a day and saves the request
+availabilityEndpoint read-only Worker route returning unclaimed open days
 elevenLabsAgentId   public Ken Melvoice widget id
 phone / phoneDisplay
 ```
