@@ -184,6 +184,18 @@ h3 { font-size: clamp(1.5rem, 4vw, 1.9rem); }
   object-fit: cover;
   object-position: center center;
   background: var(--ink);
+  pointer-events: none;
+}
+
+/* The hero is scroll-controlled; suppress iOS/Android's paused-video overlay. */
+.hero-video::-webkit-media-controls,
+.hero-video::-webkit-media-controls-panel,
+.hero-video::-webkit-media-controls-start-playback-button,
+.hero-video::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+  -webkit-appearance: none;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .hero-vignette {
