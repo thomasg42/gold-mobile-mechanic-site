@@ -168,7 +168,7 @@ h3 { font-size: clamp(1.5rem, 4vw, 1.9rem); }
 .nav-links + .nav-cta { margin-left: 1.6rem; }
 
 /* ── hero ─────────────────────────────────────────────────────────────── */
-.hero-scroll { height: 420vh; position: relative; }
+.hero-scroll { height: 650vh; position: relative; }
 .hero-sticky {
   position: sticky; top: 0;
   height: 100vh; height: 100svh;
@@ -190,28 +190,56 @@ h3 { font-size: clamp(1.5rem, 4vw, 1.9rem); }
   position: absolute; inset: 0; z-index: 4; pointer-events: none;
   background:
     linear-gradient(to bottom,
-      rgba(11,12,13,.82) 0%, rgba(11,12,13,.15) 20%, transparent 38%,
-      rgba(11,12,13,.72) 58%, rgba(11,12,13,.95) 78%),
-    radial-gradient(ellipse 92% 74% at 50% 38%, transparent 44%, rgba(11,12,13,.62) 100%);
+      rgba(11,12,13,.78) 0%, rgba(11,12,13,.12) 20%, transparent 40%,
+      rgba(11,12,13,.12) 60%, rgba(11,12,13,.32) 100%),
+    radial-gradient(ellipse 96% 78% at 50% 40%, transparent 50%, rgba(11,12,13,.22) 100%);
 }
 
 .hero-state {
   position: absolute; z-index: 6;
   left: 50%; transform: translateX(-50%);
   top: calc(env(safe-area-inset-top, 0px) + 86px);
-  display: flex; align-items: center; gap: 0.8rem;
+  display: grid; justify-items: center; gap: 0.72rem;
   font-family: var(--display); font-size: 0.92rem;
   letter-spacing: 0.3em; text-transform: uppercase;
 }
+.hero-meter { display: flex; align-items: center; gap: 0.8rem; }
 .state-before { color: var(--rust); transition: opacity .3s ease; }
 .state-after { color: var(--gold); opacity: 0.28; transition: opacity .3s ease; }
 .state-rule { width: 108px; height: 2px; background: rgba(245,242,234,.16); position: relative; }
 .state-rule i { position: absolute; inset: 0 auto 0 0; width: 0%; background: var(--gold); display: block; }
+.repair-cycle {
+  position: relative;
+  width: min(88vw, 430px); height: 2.3rem;
+  list-style: none;
+}
+.repair-cycle li {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid rgba(225, 189, 91, 0.38);
+  border-radius: 999px;
+  background: rgba(11, 12, 13, 0.42);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.18);
+  color: var(--paper);
+  font-size: clamp(0.76rem, 2vw, 0.94rem);
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+  opacity: 0; transform: translateY(7px);
+}
+.repair-cycle li.is-active {
+  opacity: 1; transform: translateY(0);
+  animation: repair-in .2s ease both;
+}
+@keyframes repair-in {
+  from { opacity: 0; transform: translateY(7px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 .hero-copy {
   position: absolute; z-index: 6;
   left: 0; right: 0; bottom: 0;
-  padding: 0 22px calc(env(safe-area-inset-bottom, 0px) + 84px);
+  padding: 0 22px calc(env(safe-area-inset-bottom, 0px) + 124px);
   max-width: var(--wrap); margin: 0 auto;
 }
 .eyebrow {
@@ -232,6 +260,7 @@ h3 { font-size: clamp(1.5rem, 4vw, 1.9rem); }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 0.7rem; }
 .hero-note { margin-top: 1.1rem; color: var(--paper-3); font-size: 0.95rem; max-width: 52ch; }
 .hero-note b { color: var(--paper); }
+.hero-copy .lede, .hero-copy .hero-note { text-shadow: 0 2px 16px rgba(0, 0, 0, 0.82); }
 
 .scroll-cue {
   position: absolute; z-index: 6; right: 22px; bottom: calc(env(safe-area-inset-bottom, 0px) + 26px);
@@ -247,7 +276,7 @@ h3 { font-size: clamp(1.5rem, 4vw, 1.9rem); }
 @keyframes cue { 0%,100% { opacity: .25; transform: translateY(-5px); } 50% { opacity: 1; transform: translateY(5px); } }
 .hero-sticky.is-scrolled .scroll-cue { opacity: 0; }
 
-/* Video unavailable — the poster and hero copy still work without a long scrub. */
+/* Video unavailable — the branded background and hero copy still work without a long scrub. */
 body.hero-video-failed .hero-scroll { height: auto; }
 body.hero-video-failed .hero-sticky { position: relative; min-height: 92vh; }
 body.hero-video-failed .hero-state,
@@ -540,8 +569,8 @@ input.is-invalid, textarea.is-invalid, select.is-invalid { border-color: var(--r
   .strip li:nth-child(3) { border-left: 0; }
   .strip li:nth-child(n+3) { border-top: 1px solid var(--line-2); }
   .row-2, .row-3 { grid-template-columns: 1fr; }
-  .hero-scroll { height: 380vh; }
-  .hero-copy { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 96px); }
+  .hero-scroll { height: 600vh; }
+  .hero-copy { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 128px); }
   .hero-actions .btn { flex: 1 1 auto; }
   .scroll-cue span { display: none; }
   .foot-grid { grid-template-columns: 1fr; }

@@ -54,12 +54,15 @@ booking page before its agent existed.
 ## The hero
 
 The hero uses `docs/assets/hero/gmm-hero-orbit.mp4`, a five-second portrait
-before/after vehicle orbit. The video is pinned full-screen and its playhead is
-scrubbed by progress through the existing tall hero section; it remains muted
-and paused between scroll updates. The headline, supporting copy, CTAs,
-diagnostic note, and before/after progress indicator stay layered above it on
-desktop and phone. If the MP4 cannot load, the branded dark background remains
-visible and the hero collapses to a normal non-scrubbing block.
+before/after vehicle orbit. The mobile-safe H.264 Level 4.1 video is encoded
+with a keyframe every six frames for responsive trackpad seeking, pinned full-screen, and scrubbed by
+progress through the tall hero section. The scrubber queues only one media seek
+at a time and keeps the video muted and paused between updates. Thirteen common
+problems and repairs cycle below the before/after meter with enough scroll
+distance to read each one. The headline, supporting copy, CTAs, and diagnostic
+note stay layered above a lighter lower vignette on desktop and phone. If the
+MP4 cannot load, the branded dark background remains visible and the hero
+collapses to a normal non-scrubbing block.
 
 ## Business rules encoded in the page
 
