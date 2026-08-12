@@ -583,13 +583,15 @@ function pulseWidget() {
 /* ── hero ─────────────────────────────────────────────────────────────── */
 function bootHero() {
   const video = $('#heroVideo');
+  const canvas = $('#heroCanvas');
+  const context = canvas && canvas.getContext('2d', { alpha: false });
   const section = $('.hero-scroll');
   const fill = $('#stateFill');
   const before = $('#stateBefore');
   const after = $('#stateAfter');
   const repairs = $$('#repairCycle li');
 
-  if (!video || !section) {
+  if (!video || !canvas || !context || !section) {
     document.body.classList.add('hero-video-failed');
     return;
   }
@@ -600,6 +602,27 @@ function bootHero() {
   let ready = false;
   let initialized = false;
   let activeRepair = -1;
+
+  const resizeCanvas = () => {
+    const density = Math.min(window.devicePixelRatio || 1, 2);
+    const width = Math.max(1, Math.round(window.innerWidth * density));
+    const height = Math.max(1, Math.round(window.innerHeight * density));
+    if (canvas.width !== width) canvas.width = width;
+    if (canvas.height !== height) canvas.height = height;
+  };
+
+  const drawVideoFrame = () => {
+    if (video.readyState < 2 || !video.videoWidth || !video.videoHeight) return;
+    resizeCanvas();
+    const scale = Math.max(canvas.width / video.videoWidth, canvas.height / video.videoHeight);
+    const width = video.videoWidth * scale;
+    const height = video.videoHeight * scale;
+    const x = (canvas.width - width) / 2;
+    const y = (canvas.height - height) / 2;
+    context.fillStyle = '#0b0c0d';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(video, x, y, width, height);
+  };
 
   const paintProgress = (progress) => {
     if (fill) fill.style.width = (progress * 100).toFixed(1) + '%';
@@ -649,6 +672,7 @@ function bootHero() {
     initialized = true;
 
     const finish = () => {
+      drawVideoFrame();
       video.pause();
       ready = true;
       readScroll();
@@ -666,9 +690,14 @@ function bootHero() {
   };
 
   video.addEventListener('loadeddata', markReady, { once: true });
+  video.addEventListener('seeked', drawVideoFrame);
   video.addEventListener('error', () => document.body.classList.add('hero-video-failed'), { once: true });
   window.addEventListener('scroll', readScroll, { passive: true });
-  window.addEventListener('resize', readScroll, { passive: true });
+  window.addEventListener('resize', () => {
+    drawVideoFrame();
+    readScroll();
+  }, { passive: true });
+  resizeCanvas();
   paintProgress(0);
   readScroll();
 

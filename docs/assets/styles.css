@@ -181,17 +181,24 @@ h3 { font-size: clamp(1.5rem, 4vw, 1.9rem); }
 .hero-video {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
-  object-fit: cover;
-  object-position: center center;
   background: var(--ink);
   pointer-events: none;
 }
 
-/* The hero is scroll-controlled; suppress iOS/Android's paused-video overlay. */
-.hero-video::-webkit-media-controls,
-.hero-video::-webkit-media-controls-panel,
-.hero-video::-webkit-media-controls-start-playback-button,
-.hero-video::-webkit-media-controls-overlay-play-button {
+/* Safari can paint a play icon above a paused video even without controls.
+   Keep the decoder offscreen and draw its frames onto the visible canvas. */
+.hero-video-source {
+  position: fixed;
+  left: -100px; top: -100px;
+  width: 1px; height: 1px;
+  opacity: 0;
+  clip-path: inset(50%);
+  pointer-events: none;
+}
+.hero-video-source::-webkit-media-controls,
+.hero-video-source::-webkit-media-controls-panel,
+.hero-video-source::-webkit-media-controls-start-playback-button,
+.hero-video-source::-webkit-media-controls-overlay-play-button {
   display: none !important;
   -webkit-appearance: none;
   opacity: 0;
